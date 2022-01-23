@@ -152,10 +152,14 @@ String episodePresetToFile(num preset) {
 			return "ep_vp9.webm";
 
 		case constants.EpisodePreset_LOW:
+			return "ep_low.mp4";
+			
 		case constants.EpisodePreset_MEDIUM:
+			return "ep_med.mp4";
+
 		case constants.EpisodePreset_HIGH:
 		default:
-			return "ep_low.mp4";
+			return "ep_high.mp4";
 	}
 }
 
