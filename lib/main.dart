@@ -107,6 +107,7 @@ class NyanAnimeAppState extends State<NyanAnimeApp> {
 				DeviceOrientation.portraitUp,
 				DeviceOrientation.portraitDown,
 			]);
+			SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
 			return false;
 		}
 		if(state.route.startsWith("/episodes/")) {
@@ -161,6 +162,7 @@ class NyanAnimeAppState extends State<NyanAnimeApp> {
 			DeviceOrientation.portraitUp,
 			DeviceOrientation.portraitDown,
 		]);
+		SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
 	}
 
 	void stateGoToRoute(String route) { setState(() { state.goToRoute(route); }); }

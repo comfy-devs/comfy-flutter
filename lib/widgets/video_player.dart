@@ -83,6 +83,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 			DeviceOrientation.portraitUp,
 			DeviceOrientation.portraitDown,
 		]);
+		SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
 	}
 
 	void setupController() async {
