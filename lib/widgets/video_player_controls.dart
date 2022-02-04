@@ -46,9 +46,14 @@ class VideoPlayerControlsWidgetState extends State<VideoPlayerControlsWidget> {
 									SizedBox(
 										width: btnSize,
 										height: btnSize,
-										child: IconButton(
-											onPressed: () => { widget.videoActions["mute"]!() },
-											icon: Image.asset(widget.controller.value.volume == 0 ? "assets/icons/web/volume-mute-48x48.png" : "assets/icons/web/volume-48x48.png", width: 24, height: 24)
+										child: Stack(
+											alignment: Alignment.center,
+											children: [
+												Image.asset(widget.controller.value.volume == 0 ? "assets/icons/web/volume-mute-48x48.png" : "assets/icons/web/volume-48x48.png", width: 24, height: 24),
+												InkWell(
+													onTap: () => { widget.videoActions["mute"]!() },
+												)
+											]
 										)
 									),
 									Container(
@@ -58,31 +63,41 @@ class VideoPlayerControlsWidgetState extends State<VideoPlayerControlsWidget> {
 											color: Colors.grey,
 											backgroundBlendMode: BlendMode.saturation
 										),
-										child: IconButton(
-											onPressed: () => { widget.videoActions["subs"]!() },
-											icon: Image.asset("assets/icons/web/subs-48x48.png", width: 24, height: 24)
+										child: Stack(
+											alignment: Alignment.center,
+											children: [
+												Image.asset("assets/icons/web/subs-48x48.png", width: 24, height: 24),
+												InkWell(
+													onTap: () => { widget.videoActions["subs"]!() },
+												)
+											]
 										)
 									),
 									SizedBox(
 										width: btnSize,
 										height: btnSize,
-										child: IconButton(
-											onPressed: () => {
-												if(widget.orientation == Orientation.portrait) {
-													SystemChrome.setPreferredOrientations([
-														DeviceOrientation.landscapeRight,
-														DeviceOrientation.landscapeLeft,
-													]),
-													SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [])
-												} else {
-													SystemChrome.setPreferredOrientations([
-														DeviceOrientation.portraitDown,
-														DeviceOrientation.portraitUp,
-													]),
-													SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values)
-												}
-											},
-											icon: Image.asset("assets/icons/web/fullscreen-48x48.png", width: 24, height: 24)
+										child: Stack(
+											alignment: Alignment.center,
+											children: [
+												Image.asset("assets/icons/web/fullscreen-48x48.png", width: 24, height: 24),
+												InkWell(
+													onTap: () => {
+														if(widget.orientation == Orientation.portrait) {
+															SystemChrome.setPreferredOrientations([
+																DeviceOrientation.landscapeRight,
+																DeviceOrientation.landscapeLeft,
+															]),
+															SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [])
+														} else {
+															SystemChrome.setPreferredOrientations([
+																DeviceOrientation.portraitDown,
+																DeviceOrientation.portraitUp,
+															]),
+															SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values)
+														}
+													}
+												)
+											]
 										)
 									)
 								]

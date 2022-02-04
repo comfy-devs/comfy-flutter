@@ -1,4 +1,5 @@
 /* Base */
+import 'dart:async';
 import 'package:NyanAnime/types/base_const.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -27,16 +28,20 @@ class VideoPlayerWidget extends StatefulWidget {
 
 class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 	late VideoPlayerController controller;
-	bool showControls = true;
-	bool subs = true;
+	double controlsOpacity = 0;
+	bool controlsVisible = false;
+	Timer? controlsFadeAutoTimer;
+	Timer? controlsFadeOutTimer;
+	Timer? controlsSeekOutTimer;
+	bool showSubtitles = true;
 	num preset = EpisodePreset_HIGH;
 
     @override
     Widget build(BuildContext context) {
 		final Map<String, Function> videoActions = {
-			"play": videoPlay,
-			"mute": videoMute,
-			"subs": videoSubs
+			"play": processControlsPlay,
+			"mute": processControlsMute,
+			"subs": processControlsSubs
 		};
 		final w = widget.orientation == Orientation.portrait ? MediaQuery.of(context).size.width : (MediaQuery.of(context).size.height * (16/9));
 		final h = widget.orientation == Orientation.portrait ? (MediaQuery.of(context).size.width / (16/9)) : MediaQuery.of(context).size.height;
@@ -52,80 +57,102 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 					children: [
 						VideoPlayer(controller),
 						Visibility(
-							visible: subs,
+							visible: showSubtitles,
 							child: VideoPlayerCaptionWidget(controller: controller, orientation: widget.orientation),
 						),
-						Visibility(
-							visible: showControls,
-							child: Positioned(
-								top: 0,
-								left: 0,
-								width: w,
-								height: h,
-								child: Opacity(
-									opacity: 0.35,
-									child: Container(
-										color: const Color(0xff000000)
-									)
-								)
+						AnimatedOpacity(
+							opacity: controlsOpacity * 0.35,
+							duration: const Duration(milliseconds: 300),
+							child: Container(
+								color: const Color(0xff000000)
 							)
 						),
 						GestureDetector(
-							onTap: () => { setState(() { showControls = !showControls; }) }
+							onTap: () => {
+								setState(() {
+									controlsShow(controlsOpacity != 1);
+								})
+							}
 						),
-						Visibility(
-							visible: showControls,
-							child: Wrap(
-								alignment: WrapAlignment.center,
-								crossAxisAlignment: WrapCrossAlignment.center,
-								children: [
-									SizedBox(
-										width: ((w - btnSize) * 0.5),
-										height: h,
-										child: Stack(
-											alignment: Alignment.center,
+						AnimatedOpacity(
+							opacity: controlsOpacity,
+							duration: const Duration(milliseconds: 300),
+							child: Visibility(
+								visible: controlsVisible,
+								child: Stack(
+									children: [
+										GestureDetector(
+											onTap: () => {
+												controlsShow(false)
+											}
+										),
+										Wrap(
+											alignment: WrapAlignment.center,
+											crossAxisAlignment: WrapCrossAlignment.center,
 											children: [
-												Image.asset("assets/icons/web/skip-back-96x96.png", width: btnIconSize * 0.75, height: btnIconSize * 0.75),
-												GestureDetector(onDoubleTap: () => {
-													videoSeek(-10)
-												})
+												SizedBox(
+													width: ((w - btnSize) * 0.5),
+													height: h,
+													child: Stack(
+														alignment: Alignment.center,
+														children: [
+															Image.asset("assets/icons/web/skip-back-96x96.png", width: btnIconSize * 0.75, height: btnIconSize * 0.75),
+															InkWell(
+																onTap: () => {
+																	controlsSeekOutTimer = Timer(const Duration(milliseconds: 200), () => {
+																		controlsShow(false)
+																	})
+																},
+																onDoubleTap: () => {
+																	controlsSeekOutTimer?.cancel(),
+																	processControlsSeek(-10)
+																}
+															)
+														]
+													)
+												),
+												SizedBox(
+													width: btnSize,
+													height: btnSize,
+													child: Stack(
+														alignment: Alignment.center,
+														children: [
+															Image.asset(controller.value.isPlaying ? "assets/icons/web/pause-96x96.png" : "assets/icons/web/play-96x96.png", width: btnIconSize, height: btnIconSize),
+															InkWell(
+																onTap: processControlsPlay
+															)
+														]
+													)
+												),
+												SizedBox(
+													width: ((w - btnSize) * 0.5),
+													height: h,
+													child: Stack(
+														alignment: Alignment.center,
+														children: [
+															Image.asset("assets/icons/web/skip-forward-96x96.png", width: btnIconSize * 0.75, height: btnIconSize * 0.75),
+															InkWell(
+																onTap: () => {
+																	controlsSeekOutTimer = Timer(const Duration(milliseconds: 200), () => {
+																		controlsShow(false)
+																	})
+																},
+																onDoubleTap: () => {
+																	controlsSeekOutTimer?.cancel(),
+																	processControlsSeek(10)
+																}
+															)
+														]
+													)
+												)
 											]
-										)
-									),
-									SizedBox(
-										width: btnSize,
-										height: btnSize,
-										child: Stack(
-											alignment: Alignment.center,
-											children: [
-												Image.asset(controller.value.isPlaying ? "assets/icons/web/pause-96x96.png" : "assets/icons/web/play-96x96.png", width: btnIconSize, height: btnIconSize),
-												GestureDetector(onTap: () => {
-													videoPlay()
-												})
-											]
-										)
-									),
-									SizedBox(
-										width: ((w - btnSize) * 0.5),
-										height: h,
-										child: Stack(
-											alignment: Alignment.center,
-											children: [
-												Image.asset("assets/icons/web/skip-forward-96x96.png", width: btnIconSize * 0.75, height: btnIconSize * 0.75),
-												GestureDetector(onDoubleTap: () => {
-													videoSeek(10)
-												})
-											]
-										)
-									)
-								]
-							),
-						),
-						Visibility(
-							visible: showControls,
-							child: VideoPlayerControlsWidget(controller: controller, videoActions: videoActions, orientation: widget.orientation, w: w, showSubtitles: subs, segments: widget.segments, actions: widget.actions)
+										),
+										VideoPlayerControlsWidget(controller: controller, videoActions: videoActions, orientation: widget.orientation, w: w, showSubtitles: showSubtitles, segments: widget.segments, actions: widget.actions)
+									]
+								)
+							)
 						)
-					],
+					]
 				)
 			)
 		);
@@ -160,7 +187,8 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 			closedCaptionFile: loadSubtitles()
 		);
 		await controller.initialize();
-		videoPlay();
+		controller.play();
+		setState(() {});
 	}
 
 	Future<WebVTTCaptionFile> loadSubtitles() async {
@@ -168,33 +196,67 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 		return WebVTTCaptionFile(parseSubtitles(response.body));
 	}
 
-	void videoPlay() {
+	void processControlsPlay() {
 		if(controller.value.isPlaying) {
 			controller.pause();
 		} else {
 			controller.play();
 		}
 		setState(() {});
+		controlsResetFadeAutoTimer();
 	}
 
-	void videoSeek(int seconds) {
+	void processControlsSeek(int seconds) {
 		controller.seekTo(Duration(seconds: controller.value.position.inSeconds + seconds));
 		setState(() {});
+		controlsResetFadeAutoTimer();
 	}
 
-	void videoMute() {
+	void processControlsMute() {
+		if(controlsOpacity == 0) { return; }
 		if(controller.value.volume == 0) {
 			controller.setVolume(100);
 		} else {
 			controller.setVolume(0);
 		}
 		setState(() {});
+		controlsResetFadeAutoTimer();
 	}
 
-	void videoSubs() {
+	void processControlsSubs() {
+		if(controlsOpacity == 0) { return; }
 		setState(() {
-		  	subs = !subs;
+		  	showSubtitles = !showSubtitles;
 		});
+		controlsResetFadeAutoTimer();
+	}
+
+	void controlsShow(bool visible) {
+		setState(() {
+			controlsOpacity = visible ? 1 : 0;
+			if(visible) {
+				if(controller.value.isPlaying) {
+					controlsResetFadeAutoTimer();
+				}
+				controlsFadeOutTimer?.cancel();
+				controlsVisible = true;
+			} else {
+				controlsResetFadeOutTimer();
+				controlsFadeAutoTimer?.cancel();
+			}
+		});
+	}
+
+	void controlsResetFadeOutTimer() {
+		controlsFadeOutTimer?.cancel();
+		controlsFadeOutTimer = Timer(const Duration(milliseconds: 300), () => {
+			setState(() { controlsVisible = false; })
+		});
+	}
+
+	void controlsResetFadeAutoTimer() {
+		controlsFadeAutoTimer?.cancel();
+		controlsFadeAutoTimer = Timer(const Duration(seconds: 3), () => { controlsShow(false) });
 	}
 
 }
