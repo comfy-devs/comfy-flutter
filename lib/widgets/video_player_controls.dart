@@ -27,6 +27,9 @@ class VideoPlayerControlsWidgetState extends State<VideoPlayerControlsWidget> {
 
     @override
     Widget build(BuildContext context) {
+		final btnSize = widget.orientation == Orientation.portrait ? 36.0 : 50.0;
+		final timelineHeight = widget.orientation == Orientation.portrait ? 10.0 : 15.0;
+
         return Container(
 			alignment: Alignment.bottomCenter,
 			child: Opacity(
@@ -35,29 +38,22 @@ class VideoPlayerControlsWidgetState extends State<VideoPlayerControlsWidget> {
 					alignment: Alignment.bottomCenter,
 					children: [
 						Container(
-							height: 65,
+							height: btnSize + timelineHeight + 5,
+							padding: const EdgeInsets.all(5),
 							decoration: const BoxDecoration(color: Color(0xff444444), borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
 							child: Wrap(
 								children: [
 									SizedBox(
-										width: 50,
-										height: 50,
-										child: IconButton(
-											onPressed: () => { widget.videoActions["play"]!() },
-											icon: Image.asset(widget.controller.value.isPlaying ? "assets/icons/web/pause-48x48.png" : "assets/icons/web/play-48x48.png", width: 24, height: 24)
-										)
-									),
-									SizedBox(
-										width: 50,
-										height: 50,
+										width: btnSize,
+										height: btnSize,
 										child: IconButton(
 											onPressed: () => { widget.videoActions["mute"]!() },
 											icon: Image.asset(widget.controller.value.volume == 0 ? "assets/icons/web/volume-mute-48x48.png" : "assets/icons/web/volume-48x48.png", width: 24, height: 24)
 										)
 									),
 									Container(
-										width: 50,
-										height: 50,
+										width: btnSize,
+										height: btnSize,
 										foregroundDecoration: widget.showSubtitles ? null : const BoxDecoration(
 											color: Colors.grey,
 											backgroundBlendMode: BlendMode.saturation
@@ -68,20 +64,22 @@ class VideoPlayerControlsWidgetState extends State<VideoPlayerControlsWidget> {
 										)
 									),
 									SizedBox(
-										width: 50,
-										height: 50,
+										width: btnSize,
+										height: btnSize,
 										child: IconButton(
 											onPressed: () => {
 												if(widget.orientation == Orientation.portrait) {
 													SystemChrome.setPreferredOrientations([
 														DeviceOrientation.landscapeRight,
 														DeviceOrientation.landscapeLeft,
-													])
+													]),
+													SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [])
 												} else {
 													SystemChrome.setPreferredOrientations([
 														DeviceOrientation.portraitDown,
 														DeviceOrientation.portraitUp,
-													])
+													]),
+													SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values)
 												}
 											},
 											icon: Image.asset("assets/icons/web/fullscreen-48x48.png", width: 24, height: 24)
@@ -92,14 +90,14 @@ class VideoPlayerControlsWidgetState extends State<VideoPlayerControlsWidget> {
 						),
 						Positioned(
 							child: Container(
-								height: 15,
+								height: timelineHeight,
 								color: const Color(0xff555555)
 							)
 						),
 						Positioned(
 							left: 0,
 							child: Container(
-								height: 15,
+								height: timelineHeight,
 								width: widget.controller.value.duration.inSeconds == 0 ? 0 : widget.w * (widget.controller.value.position.inSeconds / widget.controller.value.duration.inSeconds),
 								color: const Color(0xffff3645)
 							)
@@ -111,7 +109,7 @@ class VideoPlayerControlsWidgetState extends State<VideoPlayerControlsWidget> {
 								child: Wrap(
 									children: widget.segments.map((e) =>
 										Container(
-											height: 15,
+											height: timelineHeight,
 											width: widget.controller.value.duration.inSeconds == 0 ? 0 : widget.w * (e.length / widget.controller.value.duration.inSeconds),
 											color: segmentTypeToColor(SegmentType.values[e.type]),
 											alignment: Alignment.center,
@@ -123,7 +121,7 @@ class VideoPlayerControlsWidgetState extends State<VideoPlayerControlsWidget> {
 						),
 						Positioned(
 							left: 5,
-							bottom: 20,
+							bottom: timelineHeight + 10,
 							child: Container(
 								padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
 								decoration: BoxDecoration(color: const Color(0xff555555), borderRadius: BorderRadius.circular(10)),

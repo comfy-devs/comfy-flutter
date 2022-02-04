@@ -39,6 +39,9 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 			"subs": videoSubs
 		};
 		final w = widget.orientation == Orientation.portrait ? MediaQuery.of(context).size.width : (MediaQuery.of(context).size.height * (16/9));
+		final h = widget.orientation == Orientation.portrait ? (MediaQuery.of(context).size.width / (16/9)) : MediaQuery.of(context).size.height;
+		final btnSize = widget.orientation == Orientation.portrait ? 48.0 : 96.0;
+		final btnIconSize = widget.orientation == Orientation.portrait ? 36.0 : 64.0;
 
         return Container(
 			color: Colors.black,
@@ -52,7 +55,72 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 							visible: subs,
 							child: VideoPlayerCaptionWidget(controller: controller, orientation: widget.orientation),
 						),
-						GestureDetector(onTap: () => { setState(() { showControls = !showControls; }) }),
+						Visibility(
+							visible: showControls,
+							child: Positioned(
+								top: 0,
+								left: 0,
+								width: w,
+								height: h,
+								child: Opacity(
+									opacity: 0.35,
+									child: Container(
+										color: const Color(0xff000000)
+									)
+								)
+							)
+						),
+						GestureDetector(
+							onTap: () => { setState(() { showControls = !showControls; }) }
+						),
+						Visibility(
+							visible: showControls,
+							child: Wrap(
+								alignment: WrapAlignment.center,
+								crossAxisAlignment: WrapCrossAlignment.center,
+								children: [
+									SizedBox(
+										width: ((w - btnSize) * 0.5),
+										height: h,
+										child: Stack(
+											alignment: Alignment.center,
+											children: [
+												Image.asset("assets/icons/web/skip-back-96x96.png", width: btnIconSize * 0.75, height: btnIconSize * 0.75),
+												GestureDetector(onDoubleTap: () => {
+													videoSeek(-10)
+												})
+											]
+										)
+									),
+									SizedBox(
+										width: btnSize,
+										height: btnSize,
+										child: Stack(
+											alignment: Alignment.center,
+											children: [
+												Image.asset(controller.value.isPlaying ? "assets/icons/web/pause-96x96.png" : "assets/icons/web/play-96x96.png", width: btnIconSize, height: btnIconSize),
+												GestureDetector(onTap: () => {
+													videoPlay()
+												})
+											]
+										)
+									),
+									SizedBox(
+										width: ((w - btnSize) * 0.5),
+										height: h,
+										child: Stack(
+											alignment: Alignment.center,
+											children: [
+												Image.asset("assets/icons/web/skip-forward-96x96.png", width: btnIconSize * 0.75, height: btnIconSize * 0.75),
+												GestureDetector(onDoubleTap: () => {
+													videoSeek(10)
+												})
+											]
+										)
+									)
+								]
+							),
+						),
 						Visibility(
 							visible: showControls,
 							child: VideoPlayerControlsWidget(controller: controller, videoActions: videoActions, orientation: widget.orientation, w: w, showSubtitles: subs, segments: widget.segments, actions: widget.actions)
@@ -106,6 +174,11 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 		} else {
 			controller.play();
 		}
+		setState(() {});
+	}
+
+	void videoSeek(int seconds) {
+		controller.seekTo(Duration(seconds: controller.value.position.inSeconds + seconds));
 		setState(() {});
 	}
 
