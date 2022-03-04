@@ -1,9 +1,12 @@
 /* Base */
 import 'dart:math';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../types/base.dart';
 import '../types/api.dart';
 
 class NyanAnimeState {
+	SharedPreferences? sharedPreferences;
+	Preferences preferences = Preferences();
 	String route = '/';
 	Map<String, Anime> animes = {};
 	Map<String, Episode> episodes = {};

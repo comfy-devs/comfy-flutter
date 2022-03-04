@@ -1,6 +1,8 @@
 /* Base */
+import 'package:NyanAnime/routes/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'types/api.dart';
 /* State */
 import 'state/state.dart';
@@ -13,6 +15,7 @@ import 'routes/not_found.dart';
 import 'routes/anime.dart';
 import 'routes/episode.dart';
 import 'routes/all.dart';
+import 'routes/settings.dart';
 /* API */
 import 'scripts/api/routes.dart';
 
@@ -40,7 +43,8 @@ class NyanAnimeAppState extends State<NyanAnimeApp> {
 			'goToRoute': stateGoToRoute,
 			'selectAnime': stateSelectAnime,
 			'selectEpisode': stateSelectEpisode,
-			'setSearchTerm': stateSetSearchTerm
+			'setSearchTerm': stateSetSearchTerm,
+			'setPreferences': stateSetPreferences
 		};
 
         return MaterialApp(
@@ -89,6 +93,10 @@ class NyanAnimeAppState extends State<NyanAnimeApp> {
 
 			case '/all':
 				route = AllRoute(state: state, actions: actions);
+				break;
+
+			case '/settings':
+				route = SettingsRoute(state: state, actions: actions);
 				break;
 
 			default:
@@ -163,10 +171,30 @@ class NyanAnimeAppState extends State<NyanAnimeApp> {
 			DeviceOrientation.portraitDown,
 		]);
 		SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+
+		state.sharedPreferences = await SharedPreferences.getInstance();
+		state.preferences.skipToPlayer = state.sharedPreferences?.getBool("skipToPlayer") ?? false;
 	}
 
 	void stateGoToRoute(String route) { setState(() { state.goToRoute(route); }); }
 	void stateSelectAnime(String id) { setState(() { state.selectAnime(id); }); }
-	void stateSelectEpisode(String id) { setState(() { state.selectEpisode(id); }); }
+	void stateSelectEpisode(String id) {
+		setState(() { state.selectEpisode(id); });
+		if(state.preferences.skipToPlayer) {
+			SystemChrome.setPreferredOrientations([
+				DeviceOrientation.landscapeRight,
+				DeviceOrientation.landscapeLeft,
+			]);
+			SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+		}
+	}
 	void stateSetSearchTerm(String searchTerm) { setState(() { state.setSearchTerm(searchTerm); }); }
+	void stateSetPreferences(Preferences preferences) {
+		setState(() {
+			state.preferences = preferences;
+		});
+
+		state.sharedPreferences?.setBool("skipToPlayer", preferences.skipToPlayer);
+	}
+
 }

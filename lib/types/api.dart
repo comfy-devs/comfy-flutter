@@ -20,6 +20,10 @@ class APIResponse {
 }
 
 /* Types */
+class Preferences {
+	bool skipToPlayer = false;
+}
+
 class Anime {
 	final String id;
 	final String? group;
