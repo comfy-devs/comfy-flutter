@@ -1,5 +1,4 @@
 /* Types */
-import 'dart:ui';
 import 'package:NyanAnime/scripts/nyan/util.dart';
 import '../../types/base.dart';
 import '../../types/base_const.dart' as constants;
@@ -111,31 +110,6 @@ String animeTagToDisplayName(num tag) {
     }
 }
 
-String segmentTypeToDisplayName(SegmentType type) {
-    switch(type) {
-		case SegmentType.OP:
-			return "OP";
-			
-		case SegmentType.EPISODE:
-			return "";
-
-		case SegmentType.ED:
-			return "ED";
-	}
-}
-Color segmentTypeToColor(SegmentType type) {
-	switch(type) {
-		case SegmentType.OP:
-			return const Color(0xff5656ef);
-			
-		case SegmentType.EPISODE:
-			return const Color(0x00000000);
-
-		case SegmentType.ED:
-			return const Color(0xffef5856);
-	}
-}
-
 String episodeLocationToURL(EpisodeLocation location) {
     switch(location) {
 		case EpisodeLocation.AKAGI:
@@ -143,23 +117,6 @@ String episodeLocationToURL(EpisodeLocation location) {
 
 		case EpisodeLocation.KAGA:
 			return "https://kaga.nyananime.xyz";
-	}
-}
-
-String episodePresetToFile(num preset) {
-    switch(preset) {
-		case constants.EpisodePreset_VP9:
-			return "ep_vp9.webm";
-
-		case constants.EpisodePreset_LOW:
-			return "ep_low.mp4";
-			
-		case constants.EpisodePreset_MEDIUM:
-			return "ep_med.mp4";
-
-		case constants.EpisodePreset_HIGH:
-		default:
-			return "ep_high.mp4";
 	}
 }
 
@@ -175,7 +132,11 @@ String? homeTopicExtra(Anime item, num? extra) {
 		case 1: {
             String t = secondsToStringHuman(time + 604800 - (DateTime.now().millisecondsSinceEpoch / 1000).floor());
             String t2 = secondsToStringHuman((DateTime.now().millisecondsSinceEpoch / 1000).floor() - 604800 - time);
-            return t == '??' ? 'Not uploaded yet ($t2 ago)' : 'in $t';
+            return t == '??' ? '$t2 ago' : 'in $t';
+		}
+
+		default: {
+			return '??';
 		}
 	}
 }

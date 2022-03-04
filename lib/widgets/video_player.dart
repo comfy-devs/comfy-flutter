@@ -184,7 +184,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
 	void setupController() async {
 		controller = VideoPlayerController.network(
-			'${episodeLocationToURL(EpisodeLocation.values[widget.parent.location])}/${widget.item.anime}/${widget.item.pos}/${episodePresetToFile(preset)}',
+			'${episodeLocationToURL(EpisodeLocation.values[widget.parent.location])}/${widget.item.anime}/${widget.item.pos}/${widget.parent.version == 0 ? "ep_high.mp4" : "hls/x264/master.m3u8"}',
 			closedCaptionFile: loadSubtitles()
 		);
 		await controller.initialize();
@@ -193,7 +193,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 	}
 
 	Future<WebVTTCaptionFile> loadSubtitles() async {
-		final response = await http.get(Uri.parse('${episodeLocationToURL(EpisodeLocation.values[widget.parent.location])}/${widget.item.anime}/${widget.item.pos}/subs_en.vtt'));
+		final response = await http.get(Uri.parse('${episodeLocationToURL(EpisodeLocation.values[widget.parent.location])}/${widget.item.anime}/${widget.item.pos}/${widget.parent.version == 0 ? "subs_en.vtt" : "subs/eng.vtt"}'));
 		return WebVTTCaptionFile(parseSubtitles(response.body));
 	}
 

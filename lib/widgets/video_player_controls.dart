@@ -2,9 +2,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import '../types/base.dart';
 import '../types/api.dart';
-import '../scripts/nyan/constants.dart';
 import '../scripts/nyan/util.dart';
 
 class VideoPlayerControlsWidget extends StatefulWidget {

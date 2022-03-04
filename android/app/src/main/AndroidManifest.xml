@@ -2,7 +2,7 @@
     package="com.lamkasdev.nyananime">
     <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:label="NyanAnime"
+        android:label="Nyan Anime"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:extractNativeLibs="false">

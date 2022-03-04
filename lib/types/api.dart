@@ -40,8 +40,9 @@ class Anime {
 	final int presets;
 	final int location;
 	final int? timestamp;
+	final int version;
 
-  	Anime(this.id, this.group, this.season, this.title, this.synopsis, this.episodes, this.favourites, this.type, this.status, this.genres, this.tags, this.rating, this.presets, this.location, this.timestamp);
+  	Anime(this.id, this.group, this.season, this.title, this.synopsis, this.episodes, this.favourites, this.type, this.status, this.genres, this.tags, this.rating, this.presets, this.location, this.timestamp, this.version);
 
   	Anime.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -58,7 +59,8 @@ class Anime {
 	  rating = json['rating'],
 	  presets = json['presets'],
 	  location = json['location'],
-	  timestamp = json['timestamp'];
+	  timestamp = json['timestamp'],
+	  version = json['version'];
 }
 
 class Episode {
