@@ -106,33 +106,24 @@ class VideoPlayerControlsWidgetState extends State<VideoPlayerControlsWidget> {
 						Positioned(
 							child: Container(
 								height: timelineHeight,
-								color: const Color(0xff555555)
-							)
-						),
-						Positioned(
-							left: 0,
-							child: Container(
-								height: timelineHeight,
-								width: widget.controller.value.duration.inSeconds == 0 ? 0 : widget.w * (widget.controller.value.position.inSeconds / widget.controller.value.duration.inSeconds),
-								color: const Color(0xffff3645)
-							)
-						),
-						Positioned(
-							left: 0,
-							child: Opacity(
-								opacity: 0.5,
-								child: Wrap(
-									children: widget.segments.map((e) =>
-										Container(
-											height: timelineHeight,
-											width: widget.controller.value.duration.inSeconds == 0 ? 0 : widget.w * (e.length / widget.controller.value.duration.inSeconds),
-											color: segmentTypeToColor(SegmentType.values[e.type]),
-											alignment: Alignment.center,
-											child: Text(segmentTypeToDisplayName(SegmentType.values[e.type]), style: const TextStyle(color: Colors.white, fontSize: 7))
-										)
-									).toList()
+								color: const Color(0xff555555),
+								child: SliderTheme(
+									child: Slider(
+										value: widget.controller.value.position.inSeconds.toDouble(),
+										max: widget.controller.value.duration.inSeconds == 0 ? 60 : widget.controller.value.duration.inSeconds.toDouble(),
+										activeColor: const Color(0xffff3645),
+										inactiveColor: Colors.transparent,
+										onChanged: (double b) {
+											widget.videoActions["seek"]!(b.toInt());
+										},
+									),
+									data: SliderTheme.of(context).copyWith(
+										trackHeight: timelineHeight,
+										trackShape: SeekBarTrackShape(),
+										thumbShape: SliderComponentShape.noThumb
+									)
 								)
-							)
+							),
 						),
 						Positioned(
 							left: 5,
@@ -174,4 +165,20 @@ class VideoPlayerControlsWidgetState extends State<VideoPlayerControlsWidget> {
 		}
 	}
 
+}
+
+class SeekBarTrackShape extends RectangularSliderTrackShape {
+	@override Rect getPreferredRect({
+		required RenderBox parentBox,
+		Offset offset = Offset.zero,
+		required SliderThemeData sliderTheme,
+		bool isEnabled = false,
+		bool isDiscrete = false,
+	}) {
+		final double trackHeight = sliderTheme.trackHeight ?? 2;
+		final double trackLeft = offset.dx;
+		final double trackTop = offset.dy + (parentBox.size.height - trackHeight) / 2;
+		final double trackWidth = parentBox.size.width;
+		return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
+	}
 }

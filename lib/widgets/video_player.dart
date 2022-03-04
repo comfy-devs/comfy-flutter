@@ -41,7 +41,8 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 		final Map<String, Function> videoActions = {
 			"play": processControlsPlay,
 			"mute": processControlsMute,
-			"subs": processControlsSubs
+			"subs": processControlsSubs,
+			"seek": processControlsSeek
 		};
 		final w = widget.orientation == Orientation.portrait ? MediaQuery.of(context).size.width : (MediaQuery.of(context).size.height * (16/9));
 		final h = widget.orientation == Orientation.portrait ? (MediaQuery.of(context).size.width / (16/9)) : MediaQuery.of(context).size.height;
@@ -105,7 +106,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 																},
 																onDoubleTap: () => {
 																	controlsSeekOutTimer?.cancel(),
-																	processControlsSeek(-10)
+																	processControlsSeek(controller.value.position.inSeconds - 10)
 																}
 															)
 														]
@@ -139,7 +140,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 																},
 																onDoubleTap: () => {
 																	controlsSeekOutTimer?.cancel(),
-																	processControlsSeek(10)
+																	processControlsSeek(controller.value.position.inSeconds + 10)
 																}
 															)
 														]
@@ -207,7 +208,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 	}
 
 	void processControlsSeek(int seconds) {
-		controller.seekTo(Duration(seconds: controller.value.position.inSeconds + seconds));
+		controller.seekTo(Duration(seconds: seconds));
 		setState(() {});
 		controlsResetFadeAutoTimer();
 	}
