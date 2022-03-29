@@ -11,8 +11,8 @@ Future<List<Anime>> fetchAnimes() async {
 	return List<Anime>.from((response.body as List<dynamic>).map((e) => Anime.fromJson(e) ));
 }
 
-Future<List<Episode>> fetchEpisodes() async {
-	final response = await get(APIGetRequest('/episodes/all/fetch'));
+Future<List<Episode>> fetchEpisodes(id) async {
+	final response = await get(APIGetRequest('/animes/episodes/fetch?id=$id'));
 	if (response.status != 200) {
 		return [];
 	}
@@ -20,8 +20,8 @@ Future<List<Episode>> fetchEpisodes() async {
 	return List<Episode>.from((response.body as List<dynamic>).map((e) => Episode.fromJson(e) ));
 }
 
-Future<List<Segment>> fetchSegments() async {
-	final response = await get(APIGetRequest('/segments/all/fetch'));
+Future<List<Segment>> fetchSegments(id) async {
+	final response = await get(APIGetRequest('/episodes/segments/fetch?id=$id'));
 	if (response.status != 200) {
 		return [];
 	}

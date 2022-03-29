@@ -152,17 +152,9 @@ class NyanAnimeAppState extends State<NyanAnimeApp> {
 
 	void setupApp() async {
 		List<Anime> animeList = await fetchAnimes();
-		List<Episode> episodeList = await fetchEpisodes();
-		List<Segment> segmentList = await fetchSegments();
 		setState(() {
 			for (var e in animeList) {
 				state.animes[e.id] = e;
-			}
-			for (var e in episodeList) {
-				state.episodes[e.id] = e;
-			}
-			for (var e in segmentList) {
-				state.segments[e.id] = e;
 			}
 		});
 
@@ -172,14 +164,32 @@ class NyanAnimeAppState extends State<NyanAnimeApp> {
 		]);
 		SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
 
+		state.packageInfo = await PackageInfo.fromPlatform();
 		state.sharedPreferences = await SharedPreferences.getInstance();
 		state.preferences.skipToPlayer = state.sharedPreferences?.getBool("skipToPlayer") ?? false;
 	}
 
 	void stateGoToRoute(String route) { setState(() { state.goToRoute(route); }); }
-	void stateSelectAnime(String id) { setState(() { state.selectAnime(id); }); }
-	void stateSelectEpisode(String id) {
-		setState(() { state.selectEpisode(id); });
+
+	void stateSelectAnime(String id) async {
+		List<Episode> episodeList = await fetchEpisodes(id);
+		setState(() {
+			state.selectAnime(id);
+			for (var e in episodeList) {
+				state.episodes[e.id] = e;
+			}
+		});
+	}
+
+	void stateSelectEpisode(String id) async {
+		List<Segment> segmentList = await fetchSegments(id);
+		setState(() {
+			state.selectEpisode(id);
+			for (var e in segmentList) {
+				state.segments[e.id] = e;
+			}
+		});
+
 		if(state.preferences.skipToPlayer) {
 			SystemChrome.setPreferredOrientations([
 				DeviceOrientation.landscapeRight,
@@ -188,6 +198,7 @@ class NyanAnimeAppState extends State<NyanAnimeApp> {
 			SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
 		}
 	}
+	
 	void stateSetSearchTerm(String searchTerm) { setState(() { state.setSearchTerm(searchTerm); }); }
 	void stateSetPreferences(Preferences preferences) {
 		setState(() {
