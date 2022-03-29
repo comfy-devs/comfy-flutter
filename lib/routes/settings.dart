@@ -33,7 +33,8 @@ class SettingsRoute extends StatelessWidget {
 									child: Text("Skip to video player: ${state.preferences.skipToPlayer ? 'Yes' : 'No'}", style: const TextStyle( color: Colors.white, fontSize: 13 )),
 									style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(const Color(0xff2f2f2f)))
 								)
-							)
+							),
+							Text("Version: ${state.packageInfo?.version}", style: const TextStyle( color: Colors.white, fontSize: 13 ))
 						]
 					)
 				)

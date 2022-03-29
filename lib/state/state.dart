@@ -1,10 +1,12 @@
 /* Base */
 import 'dart:math';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../types/base.dart';
 import '../types/api.dart';
 
 class NyanAnimeState {
+	PackageInfo? packageInfo;
 	SharedPreferences? sharedPreferences;
 	Preferences preferences = Preferences();
 	String route = '/';
