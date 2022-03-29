@@ -20,7 +20,7 @@ class AllRoute extends StatelessWidget {
 			animeChunks.add(animes.sublist(i, (i + 2 <= animes.length ? i + 2 : animes.length)));
 		}
 
-		return ListView(
+		return Wrap(
 			children: [
 				Container(
 					alignment: Alignment.center,
@@ -47,9 +47,18 @@ class AllRoute extends StatelessWidget {
 									),
 								)
 							),
-							Wrap(
-								direction: Axis.vertical,
-								children: animeChunks.map((e) => Wrap(children: e.map((el) => AnimeCardWidget(item: el, small: true, actions: actions)).toList() )).toList()
+							Container(
+								height: MediaQuery.of(context).size.height - 100,
+								width: 320,
+								padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+								child: ListView.builder(
+									physics: const BouncingScrollPhysics(),
+									scrollDirection: Axis.vertical,
+									itemCount: animeChunks.length,
+									itemBuilder: (BuildContext _context, int i) {
+										return Wrap(children: animeChunks[i].map((el) => AnimeCardWidget(item: el, small: true, actions: actions)).toList());
+									}
+								)
 							)
 						]
 					)
