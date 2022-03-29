@@ -1,5 +1,5 @@
 /* Types */
-import 'package:NyanAnime/scripts/nyan/util.dart';
+import 'package:nyan_anime/scripts/nyan/util.dart';
 import '../../types/base.dart';
 import '../../types/base_const.dart' as constants;
 import '../../types/api.dart';

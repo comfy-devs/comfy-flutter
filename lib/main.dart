@@ -1,5 +1,5 @@
 /* Base */
-import 'package:NyanAnime/routes/settings.dart';
+import 'package:nyan_anime/routes/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';

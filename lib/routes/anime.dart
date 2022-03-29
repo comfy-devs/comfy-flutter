@@ -1,5 +1,5 @@
 /* Base */
-import 'package:NyanAnime/types/base_const.dart';
+import 'package:nyan_anime/types/base_const.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../types/base.dart';

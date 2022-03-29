@@ -1,5 +1,5 @@
 /* Base */
-import 'package:NyanAnime/types/base.dart';
+import 'package:nyan_anime/types/base.dart';
 import 'package:flutter/material.dart';
 import '../types/api.dart';
 import '../state/state.dart';

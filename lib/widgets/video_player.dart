@@ -1,6 +1,6 @@
 /* Base */
 import 'dart:async';
-import 'package:NyanAnime/types/base_const.dart';
+import 'package:nyan_anime/types/base_const.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
