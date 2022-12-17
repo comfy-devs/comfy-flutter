@@ -1,8 +1,16 @@
 /* Base */
+import 'dart:io';
+import 'dart:ui';
+
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:nyan_anime/routes/offline.dart';
 import 'package:nyan_anime/routes/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nyan_anime/scripts/flutter/development.dart';
+import 'package:nyan_anime/scripts/flutter/offline.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'types/api.dart';
 /* State */
@@ -16,197 +24,256 @@ import 'routes/not_found.dart';
 import 'routes/anime.dart';
 import 'routes/episode.dart';
 import 'routes/all.dart';
-import 'routes/settings.dart';
 /* API */
 import 'scripts/api/routes.dart';
 
 void main() => runApp(const NyanAnimeApp());
 
 class NyanAnimeApp extends StatefulWidget {
-  	const NyanAnimeApp({Key? key}) : super(key: key);
+  const NyanAnimeApp({Key? key}) : super(key: key);
 
-    @override
-  	NyanAnimeAppState createState() => NyanAnimeAppState();
+  @override
+  NyanAnimeAppState createState() => NyanAnimeAppState();
 }
 
 class NyanAnimeAppState extends State<NyanAnimeApp> {
-	NyanAnimeState state = NyanAnimeState();
+  NyanAnimeState state = NyanAnimeState();
+  static const MethodChannel _channel = MethodChannel('nyananime');
 
-    @override
-    Widget build(BuildContext context) {
-		// TODO: add seeking in VideoPlayerControls
-		// TODO: add skipping openings and ending in VideoPlayer
-		// TODO: add rest of the filters to All
-		// TODO: add dubbed button to VideoPlayerControls
-		// TODO: add quality button to VideoPlayerControls
+  @override
+  Widget build(BuildContext context) {
+    // TODO: add seeking in VideoPlayerControls
+    // TODO: add skipping openings and ending in VideoPlayer
+    // TODO: add rest of the filters to All
+    // TODO: add dubbed button to VideoPlayerControls
+    // TODO: add quality button to VideoPlayerControls
 
-		final Map<String, Function> actions = {
-			'goToRoute': stateGoToRoute,
-			'selectAnime': stateSelectAnime,
-			'selectEpisode': stateSelectEpisode,
-			'setSearchTerm': stateSetSearchTerm,
-			'setPreferences': stateSetPreferences
-		};
+    final Map<String, Function> actions = {
+      'goToRoute': stateGoToRoute,
+      'selectAnime': stateSelectAnime,
+      'selectEpisode': stateSelectEpisode,
+      'setSearchTerm': stateSetSearchTerm,
+      'setPreferences': stateSetPreferences
+    };
 
-        return MaterialApp(
-            title: 'Nyan Anime',
-            theme: ThemeData(
-                appBarTheme: const AppBarTheme(
-                    color: Color(0xff1b1b1b)
-                )
-            ),
-            home: OrientationBuilder(builder: (_, orientation) {
-				return WillPopScope(
-					onWillPop: () => processPop(orientation),
-					child: Scaffold(
-						backgroundColor: const Color(0xff151515),
-						appBar: PreferredSize(
-							preferredSize: Size.fromHeight(MediaQuery.of(_).padding.top + 80),
-							child: Visibility(
-								visible: orientation == Orientation.portrait,
-								child: AppBar(
-									flexibleSpace: Column(
-										mainAxisAlignment: MainAxisAlignment.start,
-										crossAxisAlignment: CrossAxisAlignment.start,
-										children: [
-											SizedBox(height: MediaQuery.of(_).padding.top + 10),
-											HeaderWidget(actions: actions),
-											const SizedBox(height: 10),
-											SubHeaderWidget(actions: actions)
-										]
-									)
-								)
-							)
-						),
-						body: buildRoute(actions, orientation)
-					)
-				);
-			})
-        );
+    return MaterialApp(
+        title: 'Nyan Anime',
+        theme:
+            ThemeData(appBarTheme: const AppBarTheme(color: Color(0xff1b1b1b))),
+        home: OrientationBuilder(builder: (_, orientation) {
+          return WillPopScope(
+              onWillPop: () => processPop(orientation),
+              child: Scaffold(
+                  backgroundColor: const Color(0xff151515),
+                  appBar: PreferredSize(
+                      preferredSize:
+                          Size.fromHeight(MediaQuery.of(_).padding.top + 80),
+                      child: Visibility(
+                          visible: orientation == Orientation.portrait,
+                          child: AppBar(
+                              flexibleSpace: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                SizedBox(
+                                    height: MediaQuery.of(_).padding.top + 10),
+                                HeaderWidget(actions: actions),
+                                const SizedBox(height: 10),
+                                SubHeaderWidget(actions: actions)
+                              ])))),
+                  body: buildRoute(actions, orientation)));
+        }));
+  }
+
+  StatelessWidget buildRoute(
+      Map<String, Function> actions, Orientation orientation) {
+    StatelessWidget route;
+    switch (state.route) {
+      case '/':
+        route = HomeRoute(state: state, actions: actions);
+        break;
+
+      case '/all':
+        route = AllRoute(state: state, actions: actions);
+        break;
+
+      case '/settings':
+        route = SettingsRoute(state: state, actions: actions);
+        break;
+
+      case '/offline':
+        route = OfflineRoute(state: state, actions: actions);
+        break;
+
+      default:
+        route = NotFoundRoute(state: state, actions: actions);
+        break;
+    }
+    if (state.route.startsWith("/animes/")) {
+      route = AnimeRoute(state: state, actions: actions);
+    }
+    if (state.route.startsWith("/episodes/")) {
+      route = EpisodeRoute(
+          state: state, orientation: orientation, actions: actions);
     }
 
-	StatelessWidget buildRoute(Map<String, Function> actions,Orientation orientation) {
-		StatelessWidget route;
-		switch(state.route) {
-			case '/':
-				route = HomeRoute(state: state, actions: actions);
-				break;
+    return route;
+  }
 
-			case '/all':
-				route = AllRoute(state: state, actions: actions);
-				break;
+  Future<bool> processPop(Orientation orientation) async {
+    if (orientation == Orientation.landscape) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+          overlays: SystemUiOverlay.values);
+      return false;
+    }
+    if (state.route.startsWith("/episodes/")) {
+      String id = state.route.substring("/episodes/".length);
+      Episode? episode = state.episodes[id];
+      if (episode == null) {
+        stateGoToRoute('/');
+      } else {
+        stateGoToRoute('/animes/${episode.anime}');
+      }
 
-			case '/settings':
-				route = SettingsRoute(state: state, actions: actions);
-				break;
+      return false;
+    }
+    switch (state.route) {
+      case '/':
+        return true;
+    }
 
-			default:
-				route = NotFoundRoute(state: state, actions: actions);
-				break;
-		}
-		if(state.route.startsWith("/animes/")) { route = AnimeRoute(state: state, actions: actions); }
-		if(state.route.startsWith("/episodes/")) { route = EpisodeRoute(state: state, orientation: orientation, actions: actions); }
-		
-		return route;
-	}
+    stateGoToRoute('/');
+    return false;
+  }
 
-	Future<bool> processPop(Orientation orientation) async {
-		if(orientation == Orientation.landscape) {
-			SystemChrome.setPreferredOrientations([
-				DeviceOrientation.portraitUp,
-				DeviceOrientation.portraitDown,
-			]);
-			SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
-			return false;
-		}
-		if(state.route.startsWith("/episodes/")) {
-			String id = state.route.substring("/episodes/".length);
-			Episode? episode = state.episodes[id];
-			if(episode == null) { 
-				stateGoToRoute('/');
-			} else {
-				stateGoToRoute('/animes/${episode.anime}');
-			}
+  @override
+  void initState() {
+    super.initState();
+    setupApp();
+  }
 
-			return false;
-		}
-		switch(state.route) {
-			case '/':
-				return true;
-		}
+  @override
+  void reassemble() {
+    super.reassemble();
+    setupApp();
+  }
 
-		stateGoToRoute('/');
-		return false;
-	}
+  void setupApp() async {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
 
-	@override
-	void initState() {
-		super.initState();
-		setupApp();
-	}
+    state.packageInfo = await PackageInfo.fromPlatform();
+    state.offlineLocations.clear();
+    state.offlineLocations.add((await getApplicationDocumentsDirectory()).path);
+    state.offlineLocations.addAll(
+        (await getExternalStorageDirectories())?.map((e) => e.path) ?? []);
+    state.sharedPreferences = await SharedPreferences.getInstance();
+    state.preferences.skipToPlayer =
+        state.sharedPreferences?.getBool("skipToPlayer") ?? false;
+    state.preferences.apiEndpoint =
+        state.sharedPreferences?.getString("apiEndpoint") ??
+            "https://api.nyananime.xyz";
+    state.preferences.imageEndpoint =
+        state.sharedPreferences?.getString("imageEndpoint") ??
+            "https://image.nyananime.xyz";
+    state.preferences.akagiEndpoint =
+        state.sharedPreferences?.getString("akagiEndpoint") ??
+            "https://akagi.nyananime.xyz";
+    state.preferences.dev = state.sharedPreferences?.getBool("dev") ?? false;
+    if (state.preferences.dev) {
+      HttpOverrides.global = DevelopmentHttpOverrides();
+    }
+    state.preferences.offlineModeLocation =
+        state.sharedPreferences?.getString("offlineModeLocation");
+    if (state.preferences.offlineModeLocation != null) {
+      state.offlineManifest = await loadOfflineManifest(state);
+      if (!FlutterDownloader.initialized) {
+        await FlutterDownloader.initialize(debug: true);
+        IsolateNameServer.registerPortWithName(
+            state.offlineDownloaderPort.sendPort, 'downloader_send_port');
+        state.offlineDownloaderPort.listen((dynamic data) {
+          setState(() {
+            OfflineTaskState taskState = OfflineTaskState.fromJson(data);
+            state.offlineTasks[taskState.id]?.state = taskState;
+          });
+        });
+        FlutterDownloader.registerCallback(downloadCallback);
+      }
+    }
 
-	@override
-	void reassemble() {
-		super.reassemble();
-		setupApp();
-	}
+    List<Anime> animeList = await fetchAnimes(state);
+    setState(() {
+      for (var e in animeList) {
+        state.animes[e.id] = e;
+      }
+    });
+  }
 
-	void setupApp() async {
-		List<Anime> animeList = await fetchAnimes();
-		setState(() {
-			for (var e in animeList) {
-				state.animes[e.id] = e;
-			}
-		});
+  void stateGoToRoute(String route) {
+    setState(() {
+      state.goToRoute(route);
+    });
+  }
 
-		SystemChrome.setPreferredOrientations([
-			DeviceOrientation.portraitUp,
-			DeviceOrientation.portraitDown,
-		]);
-		SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+  void stateSelectAnime(String id) async {
+    List<Episode> episodeList = await fetchEpisodes(state, id);
+    setState(() {
+      state.selectAnime(id);
+      for (var e in episodeList) {
+        state.episodes[e.id] = e;
+        state.offlineTasks["0"] = OfflineTask("0", e,
+            OfflineTaskState("0", DownloadTaskStatus.running.value, 20));
+      }
+    });
+  }
 
-		state.packageInfo = await PackageInfo.fromPlatform();
-		state.sharedPreferences = await SharedPreferences.getInstance();
-		state.preferences.skipToPlayer = state.sharedPreferences?.getBool("skipToPlayer") ?? false;
-	}
+  void stateSelectEpisode(String id) async {
+    List<Segment> segmentList = await fetchSegments(state, id);
+    setState(() {
+      state.selectEpisode(id);
+      for (var e in segmentList) {
+        state.segments[e.id] = e;
+      }
+    });
 
-	void stateGoToRoute(String route) { setState(() { state.goToRoute(route); }); }
+    if (state.preferences.skipToPlayer) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.landscapeLeft,
+      ]);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    }
+  }
 
-	void stateSelectAnime(String id) async {
-		List<Episode> episodeList = await fetchEpisodes(id);
-		setState(() {
-			state.selectAnime(id);
-			for (var e in episodeList) {
-				state.episodes[e.id] = e;
-			}
-		});
-	}
+  void stateSetSearchTerm(String searchTerm) {
+    setState(() {
+      state.setSearchTerm(searchTerm);
+    });
+  }
 
-	void stateSelectEpisode(String id) async {
-		List<Segment> segmentList = await fetchSegments(id);
-		setState(() {
-			state.selectEpisode(id);
-			for (var e in segmentList) {
-				state.segments[e.id] = e;
-			}
-		});
+  void stateSetPreferences(Preferences preferences) {
+    setState(() {
+      state.preferences = preferences;
+    });
 
-		if(state.preferences.skipToPlayer) {
-			SystemChrome.setPreferredOrientations([
-				DeviceOrientation.landscapeRight,
-				DeviceOrientation.landscapeLeft,
-			]);
-			SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-		}
-	}
-	
-	void stateSetSearchTerm(String searchTerm) { setState(() { state.setSearchTerm(searchTerm); }); }
-	void stateSetPreferences(Preferences preferences) {
-		setState(() {
-			state.preferences = preferences;
-		});
-
-		state.sharedPreferences?.setBool("skipToPlayer", preferences.skipToPlayer);
-	}
-
+    state.sharedPreferences?.setBool("skipToPlayer", preferences.skipToPlayer);
+    state.sharedPreferences?.setString("apiEndpoint", preferences.apiEndpoint);
+    state.sharedPreferences
+        ?.setString("imageEndpoint", preferences.imageEndpoint);
+    state.sharedPreferences
+        ?.setString("akagiEndpoint", preferences.akagiEndpoint);
+    state.sharedPreferences?.setBool("dev", preferences.dev);
+    if (preferences.offlineModeLocation != null) {
+      state.sharedPreferences?.setString(
+          "offlineModeLocation", preferences.offlineModeLocation ?? "");
+    }
+  }
 }

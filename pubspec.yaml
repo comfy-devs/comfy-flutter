@@ -39,6 +39,10 @@ dependencies:
   cached_network_image: ^3.2.0
   shared_preferences: ^2.0.13
   package_info_plus: ^1.4.0
+  flutter_markdown: ^0.6.13
+  path_provider: ^2.0.11
+  json_annotation: ^4.7.0
+  flutter_downloader: ^1.9.1
 
 dev_dependencies:
   flutter_test:
@@ -50,6 +54,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
+  build_runner: ^2.3.3
+  json_serializable: ^6.5.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
