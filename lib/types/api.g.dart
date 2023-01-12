@@ -6,7 +6,7 @@ part of 'api.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Anime _$AnimeFromJson(Map<String, dynamic> json) => Anime(
+Show _$ShowFromJson(Map<String, dynamic> json) => Show(
       json['id'] as String,
       json['group'] as String?,
       json['season'] as int?,
@@ -24,7 +24,7 @@ Anime _$AnimeFromJson(Map<String, dynamic> json) => Anime(
       json['timestamp'] as int?,
     );
 
-Map<String, dynamic> _$AnimeToJson(Anime instance) => <String, dynamic>{
+Map<String, dynamic> _$ShowToJson(Show instance) => <String, dynamic>{
       'id': instance.id,
       'group': instance.group,
       'season': instance.season,
@@ -45,7 +45,7 @@ Map<String, dynamic> _$AnimeToJson(Anime instance) => <String, dynamic>{
 Episode _$EpisodeFromJson(Map<String, dynamic> json) => Episode(
       json['id'] as String,
       json['pos'] as int,
-      json['anime'] as String,
+      json['show'] as String,
       json['title'] as String,
       json['views'] as int,
     );
@@ -53,7 +53,7 @@ Episode _$EpisodeFromJson(Map<String, dynamic> json) => Episode(
 Map<String, dynamic> _$EpisodeToJson(Episode instance) => <String, dynamic>{
       'id': instance.id,
       'pos': instance.pos,
-      'anime': instance.anime,
+      'show': instance.show,
       'title': instance.title,
       'views': instance.views,
     };

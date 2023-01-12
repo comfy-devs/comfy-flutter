@@ -1,32 +1,28 @@
 /* Types */
 class FilterData {
-	String searchTerm;
+  String searchTerm;
 
-	FilterData(this.searchTerm);
+  FilterData(this.searchTerm);
 }
 
-enum AnimeType {
-    TV,
-    SPECIAL,
-    OVA,
-    MOVIE,
-    ONA,
+enum ShowType {
+  TV,
+  SPECIAL,
+  OVA,
+  MOVIE,
+  ONA,
 }
 
-enum AnimeStatus {
-    AIRING,
-    FINISHED,
+enum ShowStatus {
+  AIRING,
+  FINISHED,
 }
 
-enum AnimeRating {
-    PG,
-    R,
+enum ShowRating {
+  PG,
+  R,
 }
 
-enum EpisodeLocation {
-    AKAGI, KAGA
-}
+enum EpisodeLocation { VAPOREON, JOLTEON, FLAREON }
 
-enum SegmentType {
-    OP, EPISODE, ED
-}
+enum SegmentType { OP, EPISODE, ED }

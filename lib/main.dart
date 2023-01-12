@@ -3,12 +3,12 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:nyan_anime/routes/offline.dart';
-import 'package:nyan_anime/routes/settings.dart';
+import 'package:comfy/routes/offline.dart';
+import 'package:comfy/routes/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nyan_anime/scripts/flutter/development.dart';
-import 'package:nyan_anime/scripts/flutter/offline.dart';
+import 'package:comfy/scripts/flutter/development.dart';
+import 'package:comfy/scripts/flutter/offline.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,24 +21,24 @@ import 'widgets/sub_header.dart';
 /* Routes */
 import 'routes/home.dart';
 import 'routes/not_found.dart';
-import 'routes/anime.dart';
+import 'routes/show.dart';
 import 'routes/episode.dart';
 import 'routes/all.dart';
 /* API */
 import 'scripts/api/routes.dart';
 
-void main() => runApp(const NyanAnimeApp());
+void main() => runApp(const ComfyApp());
 
-class NyanAnimeApp extends StatefulWidget {
-  const NyanAnimeApp({Key? key}) : super(key: key);
+class ComfyApp extends StatefulWidget {
+  const ComfyApp({Key? key}) : super(key: key);
 
   @override
-  NyanAnimeAppState createState() => NyanAnimeAppState();
+  ComfyAppState createState() => ComfyAppState();
 }
 
-class NyanAnimeAppState extends State<NyanAnimeApp> {
-  NyanAnimeState state = NyanAnimeState();
-  static const MethodChannel _channel = MethodChannel('nyananime');
+class ComfyAppState extends State<ComfyApp> {
+  ComfyState state = ComfyState();
+  static const MethodChannel _channel = MethodChannel('comfy');
 
   @override
   Widget build(BuildContext context) {
@@ -50,14 +50,14 @@ class NyanAnimeAppState extends State<NyanAnimeApp> {
 
     final Map<String, Function> actions = {
       'goToRoute': stateGoToRoute,
-      'selectAnime': stateSelectAnime,
+      'selectShow': stateSelectShow,
       'selectEpisode': stateSelectEpisode,
       'setSearchTerm': stateSetSearchTerm,
       'setPreferences': stateSetPreferences
     };
 
     return MaterialApp(
-        title: 'Nyan Anime',
+        title: 'Comfy',
         theme:
             ThemeData(appBarTheme: const AppBarTheme(color: Color(0xff1b1b1b))),
         home: OrientationBuilder(builder: (_, orientation) {
@@ -109,8 +109,8 @@ class NyanAnimeAppState extends State<NyanAnimeApp> {
         route = NotFoundRoute(state: state, actions: actions);
         break;
     }
-    if (state.route.startsWith("/animes/")) {
-      route = AnimeRoute(state: state, actions: actions);
+    if (state.route.startsWith("/shows/")) {
+      route = ShowRoute(state: state, actions: actions);
     }
     if (state.route.startsWith("/episodes/")) {
       route = EpisodeRoute(
@@ -136,7 +136,7 @@ class NyanAnimeAppState extends State<NyanAnimeApp> {
       if (episode == null) {
         stateGoToRoute('/');
       } else {
-        stateGoToRoute('/animes/${episode.anime}');
+        stateGoToRoute('/shows/${episode.show}');
       }
 
       return false;
@@ -180,13 +180,13 @@ class NyanAnimeAppState extends State<NyanAnimeApp> {
         state.sharedPreferences?.getBool("skipToPlayer") ?? false;
     state.preferences.apiEndpoint =
         state.sharedPreferences?.getString("apiEndpoint") ??
-            "https://api.nyananime.xyz";
+            "https://api.comfy.lamkas.dev";
     state.preferences.imageEndpoint =
         state.sharedPreferences?.getString("imageEndpoint") ??
-            "https://image.nyananime.xyz";
-    state.preferences.akagiEndpoint =
-        state.sharedPreferences?.getString("akagiEndpoint") ??
-            "https://akagi.nyananime.xyz";
+            "https://image.comfy.lamkas.dev";
+    state.preferences.vaporeonEndpoint =
+        state.sharedPreferences?.getString("vaporeonEndpoint") ??
+            "https://vaporeon.comfy.lamkas.dev";
     state.preferences.dev = state.sharedPreferences?.getBool("dev") ?? false;
     if (state.preferences.dev) {
       HttpOverrides.global = DevelopmentHttpOverrides();
@@ -209,10 +209,10 @@ class NyanAnimeAppState extends State<NyanAnimeApp> {
       }
     }
 
-    List<Anime> animeList = await fetchAnimes(state);
+    List<Show> showList = await fetchShows(state);
     setState(() {
-      for (var e in animeList) {
-        state.animes[e.id] = e;
+      for (var e in showList) {
+        state.shows[e.id] = e;
       }
     });
   }
@@ -223,10 +223,10 @@ class NyanAnimeAppState extends State<NyanAnimeApp> {
     });
   }
 
-  void stateSelectAnime(String id) async {
+  void stateSelectShow(String id) async {
     List<Episode> episodeList = await fetchEpisodes(state, id);
     setState(() {
-      state.selectAnime(id);
+      state.selectShow(id);
       for (var e in episodeList) {
         state.episodes[e.id] = e;
         state.offlineTasks["0"] = OfflineTask("0", e,
@@ -269,7 +269,7 @@ class NyanAnimeAppState extends State<NyanAnimeApp> {
     state.sharedPreferences
         ?.setString("imageEndpoint", preferences.imageEndpoint);
     state.sharedPreferences
-        ?.setString("akagiEndpoint", preferences.akagiEndpoint);
+        ?.setString("vaporeonEndpoint", preferences.vaporeonEndpoint);
     state.sharedPreferences?.setBool("dev", preferences.dev);
     if (preferences.offlineModeLocation != null) {
       state.sharedPreferences?.setString(

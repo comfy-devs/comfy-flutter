@@ -5,7 +5,7 @@ import '../state/state.dart';
 import '../types/api.dart';
 
 class EpisodeCardWidget extends StatelessWidget {
-  final NyanAnimeState state;
+  final ComfyState state;
   final Episode item;
   final Map<String, Function> actions;
 
@@ -38,7 +38,7 @@ class EpisodeCardWidget extends StatelessWidget {
               ClipRRect(
                   child: CachedNetworkImage(
                       imageUrl:
-                          '${state.preferences.imageEndpoint}/${item.anime}/${item.pos}/thumbnail.webp',
+                          '${state.preferences.imageEndpoint}/${item.show}/${item.pos}/thumbnail.webp',
                       httpHeaders: {'Origin': state.preferences.imageEndpoint},
                       fit: BoxFit.fill,
                       errorWidget: (a, b, c) => Container())),

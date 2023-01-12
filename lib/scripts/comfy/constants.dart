@@ -1,92 +1,92 @@
 /* Types */
-import 'package:nyan_anime/scripts/nyan/util.dart';
+import 'package:comfy/scripts/comfy/util.dart';
 import '../../types/base.dart';
 import '../../types/base_const.dart' as constants;
 import '../../types/api.dart';
 
-String animeTypeToDisplayName(AnimeType type) {
+String showTypeToDisplayName(ShowType type) {
   switch (type) {
-    case AnimeType.TV:
+    case ShowType.TV:
       return "TV";
 
-    case AnimeType.SPECIAL:
+    case ShowType.SPECIAL:
       return "Special";
 
-    case AnimeType.OVA:
+    case ShowType.OVA:
       return "OVA";
 
-    case AnimeType.MOVIE:
+    case ShowType.MOVIE:
       return "Movie";
 
-    case AnimeType.ONA:
+    case ShowType.ONA:
       return "ONA";
   }
 }
 
-String animeStatusToDisplayName(AnimeStatus status) {
+String showStatusToDisplayName(ShowStatus status) {
   switch (status) {
-    case AnimeStatus.AIRING:
+    case ShowStatus.AIRING:
       return "Airing";
 
-    case AnimeStatus.FINISHED:
+    case ShowStatus.FINISHED:
       return "Finished";
   }
 }
 
-String animeGenreToDisplayName(num genre) {
+String showGenreToDisplayName(num genre) {
   switch (genre) {
-    case constants.AnimeGenre_ACTION:
+    case constants.ShowGenre_ACTION:
       return "Action";
 
-    case constants.AnimeGenre_ADVENTURE:
+    case constants.ShowGenre_ADVENTURE:
       return "Adventure";
 
-    case constants.AnimeGenre_COMEDY:
+    case constants.ShowGenre_COMEDY:
       return "Comedy";
 
-    case constants.AnimeGenre_DRAMA:
+    case constants.ShowGenre_DRAMA:
       return "Drama";
 
-    case constants.AnimeGenre_ECCHI:
+    case constants.ShowGenre_ECCHI:
       return "Ecchi";
 
-    case constants.AnimeGenre_FANTASY:
+    case constants.ShowGenre_FANTASY:
       return "Fantasy";
 
-    case constants.AnimeGenre_HORROR:
+    case constants.ShowGenre_HORROR:
       return "Horror";
 
-    case constants.AnimeGenre_MAHOU_SHOUJO:
+    case constants.ShowGenre_MAHOU_SHOUJO:
       return "Mahou Shoujo";
 
-    case constants.AnimeGenre_MECHA:
+    case constants.ShowGenre_MECHA:
       return "Mecha";
 
-    case constants.AnimeGenre_MUSIC:
+    case constants.ShowGenre_MUSIC:
       return "Music";
 
-    case constants.AnimeGenre_MYSTERY:
+    case constants.ShowGenre_MYSTERY:
       return "Mystery";
 
-    case constants.AnimeGenre_PSYCHOLOGICAL:
+    case constants.ShowGenre_PSYCHOLOGICAL:
       return "Psychological";
 
-    case constants.AnimeGenre_ROMANCE:
+    case constants.ShowGenre_ROMANCE:
       return "Romance";
 
-    case constants.AnimeGenre_SCIFI:
+    case constants.ShowGenre_SCIFI:
       return "Sci-Fi";
 
-    case constants.AnimeGenre_SLICE_OF_LIFE:
+    case constants.ShowGenre_SLICE_OF_LIFE:
       return "Slice of Life";
 
-    case constants.AnimeGenre_SPORTS:
+    case constants.ShowGenre_SPORTS:
       return "Sports";
 
-    case constants.AnimeGenre_SUPERNATURAL:
+    case constants.ShowGenre_SUPERNATURAL:
       return "Super Natural";
 
-    case constants.AnimeGenre_THRILLER:
+    case constants.ShowGenre_THRILLER:
       return "Thriller";
 
     default:
@@ -94,15 +94,15 @@ String animeGenreToDisplayName(num genre) {
   }
 }
 
-String animeTagToDisplayName(num tag) {
+String showTagToDisplayName(num tag) {
   switch (tag) {
-    case constants.AnimeTag_SUBBED:
+    case constants.ShowTag_SUBBED:
       return "Subbed";
 
-    case constants.AnimeTag_HARD_SUBBED:
+    case constants.ShowTag_HARD_SUBBED:
       return "Hard Subbed";
 
-    case constants.AnimeTag_DUBBED:
+    case constants.ShowTag_DUBBED:
       return "Dubbed";
 
     default:
@@ -112,15 +112,18 @@ String animeTagToDisplayName(num tag) {
 
 String episodeLocationToURL(Preferences preferences, EpisodeLocation location) {
   switch (location) {
-    case EpisodeLocation.AKAGI:
-      return preferences.akagiEndpoint;
+    case EpisodeLocation.VAPOREON:
+      return preferences.vaporeonEndpoint;
 
-    case EpisodeLocation.KAGA:
-      return "https://kaga.nyananime.xyz";
+    case EpisodeLocation.JOLTEON:
+      return "https://jolteon.comfy.lamkas.dev";
+
+    case EpisodeLocation.FLAREON:
+      return "https://flareon.comfy.lamkas.dev";
   }
 }
 
-String? homeTopicExtra(Anime item, num? extra) {
+String? homeTopicExtra(Show item, num? extra) {
   int? time = item.timestamp;
   if (extra == null || time == null) {
     return null;

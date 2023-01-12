@@ -3,19 +3,19 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:nyan_anime/state/state.dart';
+import 'package:comfy/state/state.dart';
 import 'package:collection/collection.dart';
 import '../../types/api.dart';
 import 'package:json_annotation/json_annotation.dart';
 import '../../types/base.dart';
-import '../nyan/constants.dart';
+import '../comfy/constants.dart';
 part 'offline.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class OfflineManifest {
-  final List<OfflineAnime> animes;
+  final List<OfflineShow> shows;
 
-  OfflineManifest(this.animes);
+  OfflineManifest(this.shows);
 
   factory OfflineManifest.fromJson(Map<String, dynamic> json) =>
       _$OfflineManifestFromJson(json);
@@ -23,16 +23,16 @@ class OfflineManifest {
 }
 
 @JsonSerializable(explicitToJson: true)
-class OfflineAnime {
+class OfflineShow {
   final String id;
-  final Anime data;
+  final Show data;
   final List<OfflineEpisode> episodes;
 
-  OfflineAnime(this.id, this.data, this.episodes);
+  OfflineShow(this.id, this.data, this.episodes);
 
-  factory OfflineAnime.fromJson(Map<String, dynamic> json) =>
-      _$OfflineAnimeFromJson(json);
-  Map<String, dynamic> toJson() => _$OfflineAnimeToJson(this);
+  factory OfflineShow.fromJson(Map<String, dynamic> json) =>
+      _$OfflineShowFromJson(json);
+  Map<String, dynamic> toJson() => _$OfflineShowToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -74,7 +74,7 @@ class OfflineTaskState {
   Map<String, dynamic> toJson() => _$OfflineTaskStateToJson(this);
 }
 
-Future<OfflineManifest> loadOfflineManifest(NyanAnimeState state) async {
+Future<OfflineManifest> loadOfflineManifest(ComfyState state) async {
   try {
     String path = "${state.preferences.offlineModeLocation}/manifest.json";
     File f = File(path);
@@ -84,36 +84,35 @@ Future<OfflineManifest> loadOfflineManifest(NyanAnimeState state) async {
   }
 }
 
-Future<void> addEpisodeToOfflineManifest(
-    NyanAnimeState state, String id) async {
+Future<void> addEpisodeToOfflineManifest(ComfyState state, String id) async {
   Episode? episodeObj = state.episodes[id];
   if (episodeObj == null) {
     return;
   }
-  Anime? animeObj = state.animes[episodeObj.anime];
-  if (animeObj == null) {
+  Show? showObj = state.shows[episodeObj.show];
+  if (showObj == null) {
     return;
   }
 
-  OfflineAnime? anime =
-      state.offlineManifest.animes.firstWhereOrNull((e) => e.id == animeObj.id);
-  if (anime == null) {
-    anime = OfflineAnime(animeObj.id, animeObj, []);
-    state.offlineManifest.animes.add(anime);
+  OfflineShow? show =
+      state.offlineManifest.shows.firstWhereOrNull((e) => e.id == showObj.id);
+  if (show == null) {
+    show = OfflineShow(showObj.id, showObj, []);
+    state.offlineManifest.shows.add(show);
   }
   OfflineEpisode? episode =
-      anime.episodes.firstWhereOrNull((e) => e.id == episodeObj.id);
+      show.episodes.firstWhereOrNull((e) => e.id == episodeObj.id);
   if (episode == null) {
     episode = OfflineEpisode(episodeObj.id, episodeObj, true);
-    anime.episodes.add(episode);
+    show.episodes.add(episode);
   }
 
-  String path = "${episodeObj.anime}/${episodeObj.pos}";
+  String path = "${episodeObj.show}/${episodeObj.pos}";
   await Directory("${state.preferences.offlineModeLocation}/$path")
       .create(recursive: true);
   await FlutterDownloader.enqueue(
     url:
-        '${episodeLocationToURL(state.preferences, EpisodeLocation.values[animeObj.location])}/$path/episode_x264.mp4',
+        '${episodeLocationToURL(state.preferences, EpisodeLocation.values[showObj.location])}/$path/episode_x264.mp4',
     headers: {},
     savedDir: "${state.preferences.offlineModeLocation}/$path",
     showNotification: true,
@@ -123,7 +122,7 @@ Future<void> addEpisodeToOfflineManifest(
   saveOfflineManifest(state);
 }
 
-Future<void> saveOfflineManifest(NyanAnimeState state) {
+Future<void> saveOfflineManifest(ComfyState state) {
   String path = "${state.preferences.offlineModeLocation}/manifest.json";
   File f = File(path);
   return f.writeAsString(json.encode(state.offlineManifest));

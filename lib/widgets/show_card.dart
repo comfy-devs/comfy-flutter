@@ -4,14 +4,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../state/state.dart';
 import '../types/api.dart';
 
-class AnimeCardWidget extends StatelessWidget {
-  final NyanAnimeState state;
-  final Anime item;
+class ShowCardWidget extends StatelessWidget {
+  final ComfyState state;
+  final Show item;
   final bool small;
   final String? extra;
   final Map<String, Function> actions;
 
-  const AnimeCardWidget(
+  const ShowCardWidget(
       {Key? key,
       required this.state,
       required this.item,

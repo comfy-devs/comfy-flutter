@@ -1,11 +1,11 @@
 /* Base */
 import 'package:flutter/material.dart';
-import 'package:nyan_anime/scripts/flutter/offline.dart';
-import 'package:nyan_anime/widgets/settings_option_dropdown.dart';
+import 'package:comfy/scripts/flutter/offline.dart';
+import 'package:comfy/widgets/settings_option_dropdown.dart';
 import '../state/state.dart';
 
 class OfflineRoute extends StatelessWidget {
-  final NyanAnimeState state;
+  final ComfyState state;
   final Map<String, Function> actions;
 
   const OfflineRoute({Key? key, required this.state, required this.actions})

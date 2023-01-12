@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import '../state/state.dart';
 import '../types/api.dart';
 /* Widgets */
-import '../widgets/anime_card.dart';
+import '../widgets/show_card.dart';
 
 class AllRoute extends StatelessWidget {
-  final NyanAnimeState state;
+  final ComfyState state;
   final Map<String, Function> actions;
 
   const AllRoute({Key? key, required this.state, required this.actions})
@@ -14,15 +14,15 @@ class AllRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Anime> animes = state.animes.values
+    List<Show> shows = state.shows.values
         .where((e) => e.title
             .toLowerCase()
             .contains(state.filterData.searchTerm.toLowerCase()))
         .toList();
-    List<List<Anime>> animeChunks = [];
-    for (int i = 0; i < animes.length; i += 2) {
-      animeChunks.add(
-          animes.sublist(i, (i + 2 <= animes.length ? i + 2 : animes.length)));
+    List<List<Show>> showChunks = [];
+    for (int i = 0; i < shows.length; i += 2) {
+      showChunks.add(
+          shows.sublist(i, (i + 2 <= shows.length ? i + 2 : shows.length)));
     }
 
     return Wrap(children: [
@@ -35,7 +35,7 @@ class AllRoute extends StatelessWidget {
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 15,
               children: [
-                Text("Animes (${animes.length}):",
+                Text("Shows (${shows.length}):",
                     style: const TextStyle(fontSize: 23, color: Colors.white)),
                 Container(
                     width: 300,
@@ -59,11 +59,11 @@ class AllRoute extends StatelessWidget {
                     child: ListView.builder(
                         physics: const BouncingScrollPhysics(),
                         scrollDirection: Axis.vertical,
-                        itemCount: animeChunks.length,
+                        itemCount: showChunks.length,
                         itemBuilder: (BuildContext _context, int i) {
                           return Wrap(
-                              children: animeChunks[i]
-                                  .map((el) => AnimeCardWidget(
+                              children: showChunks[i]
+                                  .map((el) => ShowCardWidget(
                                       state: state,
                                       item: el,
                                       small: true,

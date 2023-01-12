@@ -1,11 +1,11 @@
 /* Base */
 import 'package:flutter/material.dart';
-import 'package:nyan_anime/widgets/settings_option_button.dart';
-import 'package:nyan_anime/widgets/settings_option_text_field.dart';
+import 'package:comfy/widgets/settings_option_button.dart';
+import 'package:comfy/widgets/settings_option_text_field.dart';
 import '../state/state.dart';
 
 class SettingsRoute extends StatelessWidget {
-  final NyanAnimeState state;
+  final ComfyState state;
   final Map<String, Function> actions;
 
   const SettingsRoute({Key? key, required this.state, required this.actions})
@@ -57,22 +57,22 @@ class SettingsRoute extends StatelessWidget {
                       actions["setPreferences"]!(state.preferences);
                     }),
                 SettingsOptionTextField(
-                    text: 'Akagi endpoint:',
-                    hintText: 'Akagi endpoint...',
-                    value: state.preferences.akagiEndpoint,
+                    text: 'Vaporeon endpoint:',
+                    hintText: 'Vaporeon endpoint...',
+                    value: state.preferences.vaporeonEndpoint,
                     onChanged: (text) {
-                      state.preferences.akagiEndpoint = text;
+                      state.preferences.vaporeonEndpoint = text;
                       actions["setPreferences"]!(state.preferences);
                     }),
                 SettingsOptionButton(
                     text: "Set official endpoints",
                     onClick: () {
                       state.preferences.apiEndpoint =
-                          "https://api.nyananime.xyz";
+                          "https://api.comfy.lamkas.dev";
                       state.preferences.imageEndpoint =
-                          "https://image.nyananime.xyz";
-                      state.preferences.akagiEndpoint =
-                          "https://akagi.nyananime.xyz";
+                          "https://image.comfy.lamkas.dev";
+                      state.preferences.vaporeonEndpoint =
+                          "https://vaporeon.comfy.lamkas.dev";
                       actions["setPreferences"]!(state.preferences);
                     }),
                 SettingsOptionButton(
@@ -82,8 +82,17 @@ class SettingsRoute extends StatelessWidget {
                           "https://192.168.0.103:9101";
                       state.preferences.imageEndpoint =
                           "https://192.168.0.103:545";
-                      state.preferences.akagiEndpoint =
+                      state.preferences.vaporeonEndpoint =
                           "https://192.168.0.103:546";
+                      actions["setPreferences"]!(state.preferences);
+                    }),
+                SettingsOptionButton(
+                    text: "Set emulator endpoints",
+                    onClick: () {
+                      state.preferences.apiEndpoint = "https://10.0.2.2:9101";
+                      state.preferences.imageEndpoint = "https://10.0.2.2:545";
+                      state.preferences.vaporeonEndpoint =
+                          "https://10.0.2.2:546";
                       actions["setPreferences"]!(state.preferences);
                     }),
                 Text("Version: ${state.packageInfo?.version}",

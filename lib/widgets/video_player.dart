@@ -1,7 +1,7 @@
 /* Base */
 import 'dart:async';
-import 'package:nyan_anime/scripts/flutter/webvtt.dart';
-import 'package:nyan_anime/types/base_const.dart';
+import 'package:comfy/scripts/flutter/webvtt.dart';
+import 'package:comfy/types/base_const.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,15 +9,15 @@ import 'package:video_player/video_player.dart';
 import '../state/state.dart';
 import '../types/base.dart';
 import '../types/api.dart';
-import '../scripts/nyan/constants.dart';
+import '../scripts/comfy/constants.dart';
 /* Widgets */
 import 'video_player_controls.dart';
 import 'video_player_caption.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
-  final NyanAnimeState state;
+  final ComfyState state;
   final Episode item;
-  final Anime parent;
+  final Show parent;
   final List<Segment> segments;
   final Orientation orientation;
   final Map<String, Function> actions;
@@ -206,7 +206,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   void setupController() async {
     controller = VideoPlayerController.network(
-        '${episodeLocationToURL(widget.state.preferences, EpisodeLocation.values[widget.parent.location])}/${widget.item.anime}/${widget.item.pos}/hls/x264/master.m3u8',
+        '${episodeLocationToURL(widget.state.preferences, EpisodeLocation.values[widget.parent.location])}/${widget.item.show}/${widget.item.pos}/hls/x264/master.m3u8',
         closedCaptionFile: loadSubtitles());
     await controller.initialize();
     controller.play();
@@ -215,7 +215,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   Future<WebVTTCaptionFile> loadSubtitles() async {
     final response = await http.get(Uri.parse(
-        '${episodeLocationToURL(widget.state.preferences, EpisodeLocation.values[widget.parent.location])}/${widget.item.anime}/${widget.item.pos}/subs/eng.vtt'));
+        '${episodeLocationToURL(widget.state.preferences, EpisodeLocation.values[widget.parent.location])}/${widget.item.show}/${widget.item.pos}/subs/eng.vtt'));
     return WebVTTCaptionFile(parseSubtitles(response.body));
   }
 

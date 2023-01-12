@@ -1,43 +1,43 @@
 /* Base */
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:nyan_anime/types/base_const.dart';
+import 'package:comfy/types/base_const.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../types/base.dart';
 import '../types/api.dart';
 import '../state/state.dart';
-import '../scripts/nyan/constants.dart';
+import '../scripts/comfy/constants.dart';
 /* Widgets */
 import '../widgets/episode_card.dart';
 
-class AnimeRoute extends StatelessWidget {
-  final NyanAnimeState state;
+class ShowRoute extends StatelessWidget {
+  final ComfyState state;
   final Map<String, Function> actions;
 
-  const AnimeRoute({Key? key, required this.state, required this.actions})
+  const ShowRoute({Key? key, required this.state, required this.actions})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    String id = state.route.substring("/animes/".length);
-    Anime? anime = state.animes[id];
-    if (anime == null) {
+    String id = state.route.substring("/shows/".length);
+    Show? show = state.shows[id];
+    if (show == null) {
       return const Text("Not found...");
     }
     List<Episode> episodes = List<Episode>.from(
-        state.episodes.values.where((e) => e.anime == anime.id));
+        state.episodes.values.where((e) => e.show == show.id));
     episodes.sort((b, a) => b.pos - a.pos);
-    final title = anime.title.length < 18
-        ? anime.title
-        : "${anime.title.substring(0, 15)}...";
-    final genres = AnimeGenres.where((e) => (anime.genres & e) == e)
-        .map((e) => animeGenreToDisplayName(e))
+    final title = show.title.length < 18
+        ? show.title
+        : "${show.title.substring(0, 15)}...";
+    final genres = ShowGenres.where((e) => (show.genres & e) == e)
+        .map((e) => showGenreToDisplayName(e))
         .join(", ");
-    final tags = AnimeTags.where((e) => (anime.tags & e) == e)
-        .map((e) => animeTagToDisplayName(e))
+    final tags = ShowTags.where((e) => (show.tags & e) == e)
+        .map((e) => showTagToDisplayName(e))
         .join(", ");
     final synopsis =
-        anime.synopsis?.replaceAll("<br>", "\n") ?? "No synopsis...";
+        show.synopsis?.replaceAll("<br>", "\n") ?? "No synopsis...";
     final styleSheet = MarkdownStyleSheet(
         p: const TextStyle(color: Colors.white, fontSize: 14));
 
@@ -62,7 +62,7 @@ class AnimeRoute extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                         child: CachedNetworkImage(
                             imageUrl:
-                                '${state.preferences.imageEndpoint}/${anime.id}/poster.webp',
+                                '${state.preferences.imageEndpoint}/${show.id}/poster.webp',
                             httpHeaders: {
                               'Origin': state.preferences.imageEndpoint
                             },
@@ -88,7 +88,7 @@ class AnimeRoute extends StatelessWidget {
                     Wrap(children: [
                       const Text("Type: ",
                           style: TextStyle(color: Colors.grey, fontSize: 12)),
-                      Text(animeTypeToDisplayName(AnimeType.values[anime.type]),
+                      Text(showTypeToDisplayName(ShowType.values[show.type]),
                           style: const TextStyle(
                               color: Color(0xffff3645), fontSize: 12))
                     ]),
@@ -96,8 +96,8 @@ class AnimeRoute extends StatelessWidget {
                       const Text("Status: ",
                           style: TextStyle(color: Colors.grey, fontSize: 12)),
                       Text(
-                          animeStatusToDisplayName(
-                              AnimeStatus.values[anime.status]),
+                          showStatusToDisplayName(
+                              ShowStatus.values[show.status]),
                           style: const TextStyle(
                               color: Color(0xffff3645), fontSize: 12))
                     ]),
@@ -111,7 +111,7 @@ class AnimeRoute extends StatelessWidget {
                     Wrap(children: [
                       const Text("Episodes: ",
                           style: TextStyle(color: Colors.grey, fontSize: 12)),
-                      Text(anime.episodes.toString(),
+                      Text(show.episodes.toString(),
                           style: const TextStyle(
                               color: Color(0xffff3645), fontSize: 12))
                     ]),
@@ -123,14 +123,14 @@ class AnimeRoute extends StatelessWidget {
                     Wrap(children: [
                       const Text("Favourites: ",
                           style: TextStyle(color: Colors.grey, fontSize: 12)),
-                      Text(anime.favourites.toString(),
+                      Text(show.favourites.toString(),
                           style: const TextStyle(
                               color: Color(0xffff3645), fontSize: 12))
                     ]),
                     Wrap(children: [
                       const Text("Views: ",
                           style: TextStyle(color: Colors.grey, fontSize: 12)),
-                      Text(anime.favourites.toString(),
+                      Text(show.favourites.toString(),
                           style: const TextStyle(
                               color: Color(0xffff3645), fontSize: 12))
                     ]),

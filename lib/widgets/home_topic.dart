@@ -2,15 +2,15 @@
 import 'package:flutter/material.dart';
 import '../state/state.dart';
 import '../types/api.dart';
-import '../scripts/nyan/constants.dart';
+import '../scripts/comfy/constants.dart';
 /* Widgets */
-import 'anime_card.dart';
+import 'show_card.dart';
 
 class HomeTopicWidget extends StatelessWidget {
-  final NyanAnimeState state;
+  final ComfyState state;
   final String title;
   final int? extra;
-  final List<Anime> items;
+  final List<Show> items;
   final Map<String, Function> actions;
 
   const HomeTopicWidget(
@@ -39,7 +39,7 @@ class HomeTopicWidget extends StatelessWidget {
               itemCount: items.length,
               itemBuilder: (BuildContext _context, int i) {
                 final item = items.elementAt(i);
-                return AnimeCardWidget(
+                return ShowCardWidget(
                     state: state,
                     item: item,
                     extra: homeTopicExtra(item, extra),

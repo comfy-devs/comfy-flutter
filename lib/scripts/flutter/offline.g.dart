@@ -8,25 +8,25 @@ part of 'offline.dart';
 
 OfflineManifest _$OfflineManifestFromJson(Map<String, dynamic> json) =>
     OfflineManifest(
-      (json['animes'] as List<dynamic>)
-          .map((e) => OfflineAnime.fromJson(e as Map<String, dynamic>))
+      (json['shows'] as List<dynamic>)
+          .map((e) => OfflineShow.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
 Map<String, dynamic> _$OfflineManifestToJson(OfflineManifest instance) =>
     <String, dynamic>{
-      'animes': instance.animes.map((e) => e.toJson()).toList(),
+      'shows': instance.shows.map((e) => e.toJson()).toList(),
     };
 
-OfflineAnime _$OfflineAnimeFromJson(Map<String, dynamic> json) => OfflineAnime(
+OfflineShow _$OfflineShowFromJson(Map<String, dynamic> json) => OfflineShow(
       json['id'] as String,
-      Anime.fromJson(json['data'] as Map<String, dynamic>),
+      Show.fromJson(json['data'] as Map<String, dynamic>),
       (json['episodes'] as List<dynamic>)
           .map((e) => OfflineEpisode.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$OfflineAnimeToJson(OfflineAnime instance) =>
+Map<String, dynamic> _$OfflineShowToJson(OfflineShow instance) =>
     <String, dynamic>{
       'id': instance.id,
       'data': instance.data.toJson(),

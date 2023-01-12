@@ -1,14 +1,14 @@
 /* Base */
 import 'package:flutter/material.dart';
-import 'package:nyan_anime/scripts/flutter/offline.dart';
-import 'package:nyan_anime/widgets/settings_option_button.dart';
+import 'package:comfy/scripts/flutter/offline.dart';
+import 'package:comfy/widgets/settings_option_button.dart';
 import '../types/api.dart';
 import '../state/state.dart';
 /* Widgets */
 import '../widgets/video_player.dart';
 
 class EpisodeRoute extends StatelessWidget {
-  final NyanAnimeState state;
+  final ComfyState state;
   final Orientation orientation;
   final Map<String, Function> actions;
 
@@ -26,8 +26,8 @@ class EpisodeRoute extends StatelessWidget {
     if (episode == null) {
       return const Text("Not found...");
     }
-    Anime? anime = state.animes[episode.anime];
-    if (anime == null) {
+    Show? show = state.shows[episode.show];
+    if (show == null) {
       return const Text("Not found...");
     }
     final pH = orientation == Orientation.portrait
@@ -60,7 +60,7 @@ class EpisodeRoute extends StatelessWidget {
                 child: VideoPlayerWidget(
                     state: state,
                     item: episode,
-                    parent: anime,
+                    parent: show,
                     segments: segments,
                     orientation: orientation,
                     actions: actions)),
@@ -72,9 +72,9 @@ class EpisodeRoute extends StatelessWidget {
                       padding: const EdgeInsets.all(20),
                       child: Wrap(
                         children: [
-                          const Text("Anime: ",
+                          const Text("Show: ",
                               style: TextStyle(color: Colors.grey)),
-                          Text(anime.title,
+                          Text(show.title,
                               style: const TextStyle(color: Colors.red))
                         ],
                       )),

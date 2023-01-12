@@ -1,17 +1,17 @@
 /* Base Types */
-import 'package:nyan_anime/state/state.dart';
+import 'package:comfy/state/state.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'api.g.dart';
 
 class APIGetRequest {
-  final NyanAnimeState state;
+  final ComfyState state;
   final String path;
 
   APIGetRequest(this.state, this.path);
 }
 
 class APIPostRequest {
-  final NyanAnimeState state;
+  final ComfyState state;
   final String path;
   final Object body;
 
@@ -28,15 +28,15 @@ class APIResponse {
 /* Types */
 class Preferences {
   bool skipToPlayer = false;
-  String apiEndpoint = "https://api.nyananime.xyz";
-  String imageEndpoint = "https://image.nyananime.xyz";
-  String akagiEndpoint = "https://akagi.nyananime.xyz";
+  String apiEndpoint = "https://api.comfy.lamkas.dev";
+  String imageEndpoint = "https://image.comfy.lamkas.dev";
+  String vaporeonEndpoint = "https://vaporeon.comfy.lamkas.dev";
   bool dev = false;
   String? offlineModeLocation;
 }
 
 @JsonSerializable(explicitToJson: true)
-class Anime {
+class Show {
   final String id;
   final String? group;
   final int? season;
@@ -53,7 +53,7 @@ class Anime {
   final int location;
   final int? timestamp;
 
-  Anime(
+  Show(
       this.id,
       this.group,
       this.season,
@@ -70,19 +70,19 @@ class Anime {
       this.location,
       this.timestamp);
 
-  factory Anime.fromJson(Map<String, dynamic> json) => _$AnimeFromJson(json);
-  Map<String, dynamic> toJson() => _$AnimeToJson(this);
+  factory Show.fromJson(Map<String, dynamic> json) => _$ShowFromJson(json);
+  Map<String, dynamic> toJson() => _$ShowToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
 class Episode {
   final String id;
   final int pos;
-  final String anime;
+  final String show;
   final String title;
   final int views;
 
-  Episode(this.id, this.pos, this.anime, this.title, this.views);
+  Episode(this.id, this.pos, this.show, this.title, this.views);
 
   factory Episode.fromJson(Map<String, dynamic> json) =>
       _$EpisodeFromJson(json);

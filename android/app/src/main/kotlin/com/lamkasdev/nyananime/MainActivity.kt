@@ -1,4 +1,4 @@
-package com.lamkasdev.nyananime
+package com.lamkasdev.comfy
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -23,16 +23,16 @@ class VideoPlayerCaptionWidgetState extends State<VideoPlayerCaptionWidget> {
     double captionSize = widget.orientation == Orientation.portrait ? 15 : 32;
     String caption = widget.controller.value.caption.text;
     FontStyle captionStyle =
-        caption.contains('/NYAN_I/') ? FontStyle.italic : FontStyle.normal;
+        caption.contains('/COMFY_I/') ? FontStyle.italic : FontStyle.normal;
     FontWeight captionWeight =
-        caption.contains('/NYAN_B/') ? FontWeight.bold : FontWeight.normal;
-    TextDecoration captionDecoration = caption.contains('/NYAN_U/')
+        caption.contains('/COMFY_B/') ? FontWeight.bold : FontWeight.normal;
+    TextDecoration captionDecoration = caption.contains('/COMFY_U/')
         ? TextDecoration.underline
         : TextDecoration.none;
-    caption = caption.replaceAll('/NYAN_N/', '\n');
-    caption = caption.replaceAll('/NYAN_I/', '');
-    caption = caption.replaceAll('/NYAN_B/', '');
-    caption = caption.replaceAll('/NYAN_U/', '');
+    caption = caption.replaceAll('/COMFY_N/', '\n');
+    caption = caption.replaceAll('/COMFY_I/', '');
+    caption = caption.replaceAll('/COMFY_B/', '');
+    caption = caption.replaceAll('/COMFY_U/', '');
 
     return Stack(children: [
       ClosedCaption(
