@@ -44,7 +44,7 @@ class AllRoute extends StatelessWidget {
                         color: const Color(0xff2f2f2f),
                         borderRadius: BorderRadius.circular(10)),
                     alignment: Alignment.center,
-                    padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                    padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                     child: TextField(
                       style: const TextStyle(color: Colors.white, fontSize: 12),
                       onChanged: (text) => {actions["setSearchTerm"]!(text)},

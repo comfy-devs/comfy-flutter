@@ -5,12 +5,20 @@ class FilterData {
   FilterData(this.searchTerm);
 }
 
-enum ShowType {
+enum ShowType { ANIME, TV }
+
+enum AnimeFormat {
   TV,
   SPECIAL,
   OVA,
   MOVIE,
   ONA,
+}
+
+enum TVFormat {
+  TV,
+  SPECIAL,
+  MOVIE,
 }
 
 enum ShowStatus {

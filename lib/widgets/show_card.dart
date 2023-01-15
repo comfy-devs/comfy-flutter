@@ -22,7 +22,7 @@ class ShowCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final w = (MediaQuery.of(context).size.width / 2) - (small ? 45 : 18);
+    final w = (MediaQuery.of(context).size.width / 2) - (small ? 28 : 18);
     final h = small ? 240.0 : 300.0;
     final hO = small ? 30.0 : 40.0;
     final fs0 = small ? 10.0 : 12.0;
@@ -32,7 +32,7 @@ class ShowCardWidget extends StatelessWidget {
 
     return InkWell(
         onTap: () {
-          actions["selectAnime"]!(item.id);
+          actions["selectShow"]!(item.id);
         },
         child: Container(
             width: w,

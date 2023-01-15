@@ -41,10 +41,12 @@ class Show {
   final String? group;
   final int? season;
   final String title;
+  final List<String> altTitles;
   final String? synopsis;
   final int episodes;
   final int favourites;
   final int type;
+  final int format;
   final int status;
   final int genres;
   final int tags;
@@ -58,10 +60,12 @@ class Show {
       this.group,
       this.season,
       this.title,
+      this.altTitles,
       this.synopsis,
       this.episodes,
       this.favourites,
       this.type,
+      this.format,
       this.status,
       this.genres,
       this.tags,

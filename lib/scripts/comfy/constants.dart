@@ -6,20 +6,36 @@ import '../../types/api.dart';
 
 String showTypeToDisplayName(ShowType type) {
   switch (type) {
+    case ShowType.ANIME:
+      return "Anime";
     case ShowType.TV:
       return "TV";
+  }
+}
 
-    case ShowType.SPECIAL:
+String animeFormatToDisplayName(AnimeFormat format) {
+  switch (format) {
+    case AnimeFormat.TV:
+      return "TV";
+    case AnimeFormat.SPECIAL:
       return "Special";
-
-    case ShowType.OVA:
+    case AnimeFormat.OVA:
       return "OVA";
-
-    case ShowType.MOVIE:
+    case AnimeFormat.MOVIE:
       return "Movie";
-
-    case ShowType.ONA:
+    case AnimeFormat.ONA:
       return "ONA";
+  }
+}
+
+String tvFormatToDisplayName(TVFormat format) {
+  switch (format) {
+    case TVFormat.TV:
+      return "TV";
+    case TVFormat.SPECIAL:
+      return "Special";
+    case TVFormat.MOVIE:
+      return "Movie";
   }
 }
 
@@ -27,68 +43,124 @@ String showStatusToDisplayName(ShowStatus status) {
   switch (status) {
     case ShowStatus.AIRING:
       return "Airing";
-
     case ShowStatus.FINISHED:
       return "Finished";
   }
 }
 
-String showGenreToDisplayName(num genre) {
+String animeGenreToDisplayName(num genre) {
   switch (genre) {
-    case constants.ShowGenre_ACTION:
+    case constants.AnimeGenre_ACTION:
       return "Action";
-
-    case constants.ShowGenre_ADVENTURE:
+    case constants.AnimeGenre_ADVENTURE:
       return "Adventure";
-
-    case constants.ShowGenre_COMEDY:
+    case constants.AnimeGenre_COMEDY:
       return "Comedy";
-
-    case constants.ShowGenre_DRAMA:
+    case constants.AnimeGenre_DRAMA:
       return "Drama";
-
-    case constants.ShowGenre_ECCHI:
+    case constants.AnimeGenre_ECCHI:
       return "Ecchi";
-
-    case constants.ShowGenre_FANTASY:
+    case constants.AnimeGenre_FANTASY:
       return "Fantasy";
-
-    case constants.ShowGenre_HORROR:
+    case constants.AnimeGenre_HORROR:
       return "Horror";
-
-    case constants.ShowGenre_MAHOU_SHOUJO:
+    case constants.AnimeGenre_MAHOU_SHOUJO:
       return "Mahou Shoujo";
-
-    case constants.ShowGenre_MECHA:
+    case constants.AnimeGenre_MECHA:
       return "Mecha";
-
-    case constants.ShowGenre_MUSIC:
+    case constants.AnimeGenre_MUSIC:
       return "Music";
-
-    case constants.ShowGenre_MYSTERY:
+    case constants.AnimeGenre_MYSTERY:
       return "Mystery";
-
-    case constants.ShowGenre_PSYCHOLOGICAL:
+    case constants.AnimeGenre_PSYCHOLOGICAL:
       return "Psychological";
-
-    case constants.ShowGenre_ROMANCE:
+    case constants.AnimeGenre_ROMANCE:
       return "Romance";
-
-    case constants.ShowGenre_SCIFI:
+    case constants.AnimeGenre_SCIFI:
       return "Sci-Fi";
-
-    case constants.ShowGenre_SLICE_OF_LIFE:
+    case constants.AnimeGenre_SLICE_OF_LIFE:
       return "Slice of Life";
-
-    case constants.ShowGenre_SPORTS:
+    case constants.AnimeGenre_SPORTS:
       return "Sports";
-
-    case constants.ShowGenre_SUPERNATURAL:
+    case constants.AnimeGenre_SUPERNATURAL:
       return "Super Natural";
-
-    case constants.ShowGenre_THRILLER:
+    case constants.AnimeGenre_THRILLER:
       return "Thriller";
+    default:
+      return "Unknown";
+  }
+}
 
+String tvGenreToDisplayName(num genre) {
+  switch (genre) {
+    case constants.TVGenre_ACTION:
+      return "Action";
+    case constants.TVGenre_ADVENTURE:
+      return "Adventure";
+    case constants.TVGenre_ANIMATION:
+      return "Animation";
+    case constants.TVGenre_AWARDS_SHOW:
+      return "Awards Show";
+    case constants.TVGenre_CHILDREN:
+      return "Children";
+    case constants.TVGenre_COMEDY:
+      return "Comedy";
+    case constants.TVGenre_CRIME:
+      return "Crime";
+    case constants.TVGenre_DOCUMENTARY:
+      return "Documentary";
+    case constants.TVGenre_DRAMA:
+      return "Drama";
+    case constants.TVGenre_FAMILY:
+      return "Family";
+    case constants.TVGenre_FANTASY:
+      return "Fantasy";
+    case constants.TVGenre_FOOD:
+      return "Food";
+    case constants.TVGenre_GAME_SHOW:
+      return "Game Show";
+    case constants.TVGenre_HISTORY:
+      return "History";
+    case constants.TVGenre_HOME_GARDEN:
+      return "Home & Garden";
+    case constants.TVGenre_HORROR:
+      return "Horror";
+    case constants.TVGenre_INDIE:
+      return "Indie";
+    case constants.TVGenre_MARTIAL_ARTS:
+      return "Martial Arts";
+    case constants.TVGenre_MINI_SERIES:
+      return "Mini Series";
+    case constants.TVGenre_MUSICAL:
+      return "Musical";
+    case constants.TVGenre_MYSTERY:
+      return "Mystery";
+    case constants.TVGenre_NEWS:
+      return "News";
+    case constants.TVGenre_PODCAST:
+      return "Podcast";
+    case constants.TVGenre_REALITY:
+      return "Reality";
+    case constants.TVGenre_ROMANCE:
+      return "Romance";
+    case constants.TVGenre_SCIENCE_FICTION:
+      return "Science Fiction";
+    case constants.TVGenre_SOAP:
+      return "Soap";
+    case constants.TVGenre_SPORT:
+      return "Sport";
+    case constants.TVGenre_SUSPENSE:
+      return "Suspense";
+    case constants.TVGenre_TALK_SHOW:
+      return "Talk Show";
+    case constants.TVGenre_THRILLER:
+      return "Thriller";
+    case constants.TVGenre_TRAVEL:
+      return "Travel";
+    case constants.TVGenre_WAR:
+      return "War";
+    case constants.TVGenre_WESTERN:
+      return "Western";
     default:
       return "Unknown";
   }
@@ -98,13 +170,10 @@ String showTagToDisplayName(num tag) {
   switch (tag) {
     case constants.ShowTag_SUBBED:
       return "Subbed";
-
     case constants.ShowTag_HARD_SUBBED:
       return "Hard Subbed";
-
     case constants.ShowTag_DUBBED:
       return "Dubbed";
-
     default:
       return "Unknown";
   }
@@ -114,10 +183,8 @@ String episodeLocationToURL(Preferences preferences, EpisodeLocation location) {
   switch (location) {
     case EpisodeLocation.VAPOREON:
       return preferences.vaporeonEndpoint;
-
     case EpisodeLocation.JOLTEON:
       return "https://jolteon.comfy.lamkas.dev";
-
     case EpisodeLocation.FLAREON:
       return "https://flareon.comfy.lamkas.dev";
   }

@@ -1,7 +1,6 @@
 /* Base */
 import 'dart:async';
 import 'package:comfy/scripts/flutter/webvtt.dart';
-import 'package:comfy/types/base_const.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,7 +43,6 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   Timer? controlsFadeOutTimer;
   Timer? controlsSeekOutTimer;
   bool showSubtitles = true;
-  num preset = EpisodePreset_HIGH;
 
   @override
   Widget build(BuildContext context) {

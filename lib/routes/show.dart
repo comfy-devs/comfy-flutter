@@ -30,9 +30,13 @@ class ShowRoute extends StatelessWidget {
     final title = show.title.length < 18
         ? show.title
         : "${show.title.substring(0, 15)}...";
-    final genres = ShowGenres.where((e) => (show.genres & e) == e)
-        .map((e) => showGenreToDisplayName(e))
-        .join(", ");
+    final genres = show.type == ShowType.ANIME.index
+        ? AnimeGenres.where((e) => (show.genres & e) == e)
+            .map((e) => (animeGenreToDisplayName(e)))
+            .join(", ")
+        : TVGenres.where((e) => (show.genres & e) == e)
+            .map((e) => (tvGenreToDisplayName(e)))
+            .join(", ");
     final tags = ShowTags.where((e) => (show.tags & e) == e)
         .map((e) => showTagToDisplayName(e))
         .join(", ");
@@ -89,6 +93,18 @@ class ShowRoute extends StatelessWidget {
                       const Text("Type: ",
                           style: TextStyle(color: Colors.grey, fontSize: 12)),
                       Text(showTypeToDisplayName(ShowType.values[show.type]),
+                          style: const TextStyle(
+                              color: Color(0xffff3645), fontSize: 12))
+                    ]),
+                    Wrap(children: [
+                      const Text("Format: ",
+                          style: TextStyle(color: Colors.grey, fontSize: 12)),
+                      Text(
+                          show.type == ShowType.ANIME
+                              ? animeFormatToDisplayName(
+                                  AnimeFormat.values[show.type])
+                              : tvFormatToDisplayName(
+                                  TVFormat.values[show.type]),
                           style: const TextStyle(
                               color: Color(0xffff3645), fontSize: 12))
                     ]),
